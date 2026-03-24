@@ -178,7 +178,7 @@ function ProductsPage() {
   };
 
   return (
-    <div className="page-content">
+    <div className="page-content products-page">
       <div className="page-header">
         <h2>Quản lý sản phẩm</h2>
         <button
@@ -416,7 +416,7 @@ function ProductsPage() {
         </div>
       )}
 
-      <div className="table-container">
+      <div className="table-container products-table-container">
         <table className="data-table">
           <thead>
             <tr>

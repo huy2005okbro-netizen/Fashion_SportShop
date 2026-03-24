@@ -5,6 +5,11 @@
   flex-direction: column;
 }
 
+.products-page {
+  min-height: 100%;
+  background: #ffffff;
+}
+
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -202,7 +207,7 @@
   box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
 }
 
-.table-container {
+.products-table-container {
   background: white;
   border-radius: 8px;
   overflow: hidden;
