@@ -218,7 +218,9 @@ function ProductsPage() {
   };
 
   const handleDeleteProduct = (productId: number) => {
-    const confirmed = window.confirm("Bạn có chắc muốn xóa sản phẩm này không?");
+    const confirmed = window.confirm(
+      "Bạn có chắc muốn xóa sản phẩm này không?",
+    );
 
     if (!confirmed) {
       return;
@@ -259,10 +261,7 @@ function ProductsPage() {
     <div className="page-content products-page">
       <div className="page-header">
         <h2>Quản lý sản phẩm</h2>
-        <button
-          className="btn-primary"
-          onClick={handleOpenAddForm}
-        >
+        <button className="btn-primary" onClick={handleOpenAddForm}>
           <svg
             width="18"
             height="18"
@@ -301,7 +300,8 @@ function ProductsPage() {
 
         <div className="toolbar-summary">
           <span>
-            Hiển thị <strong>{filteredProducts.length}</strong> / {products.length} sản phẩm
+            Hiển thị <strong>{filteredProducts.length}</strong> /{" "}
+            {products.length} sản phẩm
           </span>
           {searchTerm && (
             <button
@@ -316,10 +316,7 @@ function ProductsPage() {
       </div>
 
       {showForm && (
-        <div
-          className="product-form-overlay"
-          onClick={handleCloseForm}
-        >
+        <div className="product-form-overlay" onClick={handleCloseForm}>
           <form
             className="product-form-card"
             onSubmit={handleAddProduct}
@@ -529,7 +526,9 @@ function ProductsPage() {
                 Hủy
               </button>
               <button type="submit" className="btn-primary">
-                {editingProductId !== null ? "Cập nhật sản phẩm" : "Lưu sản phẩm"}
+                {editingProductId !== null
+                  ? "Cập nhật sản phẩm"
+                  : "Lưu sản phẩm"}
               </button>
             </div>
           </form>
@@ -560,91 +559,93 @@ function ProductsPage() {
           <tbody>
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
-              <tr key={product.id}>
-                <td>{product.id}</td>
-                <td>
-                  <div className="product-image-cell">
-                    {product.image ? (
-                      <img src={product.image} alt={product.name} />
-                    ) : (
-                      <span>Chưa có ảnh</span>
-                    )}
-                  </div>
-                </td>
-                <td>{product.sku}</td>
-                <td>{product.name}</td>
-                <td>{product.category}</td>
-                <td>{product.sport}</td>
-                <td>{product.brand}</td>
-                <td>{product.gender}</td>
-                <td>{product.size}</td>
-                <td>{product.color}</td>
-                <td>{product.material}</td>
-                <td>{formatCurrency(product.price)}</td>
-                <td>{product.stock}</td>
-                <td>
-                  <span
-                    className={`badge ${
-                      product.status === "Còn hàng"
-                        ? "badge-green"
-                        : product.status === "Sắp hết"
-                          ? "badge-orange"
-                          : "badge-red"
-                    }`}
-                  >
-                    {product.status}
-                  </span>
-                </td>
-                <td>
-                  <div className="action-buttons">
-                    <button
-                      type="button"
-                      className="btn-action btn-action-edit"
-                      title="Sửa"
-                      onClick={() => handleOpenEditForm(product)}
+                <tr key={product.id}>
+                  <td>{product.id}</td>
+                  <td>
+                    <div className="product-image-cell">
+                      {product.image ? (
+                        <img src={product.image} alt={product.name} />
+                      ) : (
+                        <span>Chưa có ảnh</span>
+                      )}
+                    </div>
+                  </td>
+                  <td>{product.sku}</td>
+                  <td>{product.name}</td>
+                  <td>{product.category}</td>
+                  <td>{product.sport}</td>
+                  <td>{product.brand}</td>
+                  <td>{product.gender}</td>
+                  <td>{product.size}</td>
+                  <td>{product.color}</td>
+                  <td>{product.material}</td>
+                  <td>{formatCurrency(product.price)}</td>
+                  <td>{product.stock}</td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        product.status === "Còn hàng"
+                          ? "badge-green"
+                          : product.status === "Sắp hết"
+                            ? "badge-orange"
+                            : "badge-red"
+                      }`}
                     >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
+                      {product.status}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="action-buttons">
+                      <button
+                        type="button"
+                        className="btn-action btn-action-edit"
+                        title="Sửa"
+                        onClick={() => handleOpenEditForm(product)}
                       >
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                      </svg>
-                      <span>Sửa</span>
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-action btn-action-delete"
-                      title="Xóa"
-                      onClick={() => handleDeleteProduct(product.id)}
-                    >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                        <span>Sửa</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-action btn-action-delete"
+                        title="Xóa"
+                        onClick={() => handleDeleteProduct(product.id)}
                       >
-                        <polyline points="3 6 5 6 21 6" />
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                      </svg>
-                      <span>Xóa</span>
-                    </button>
-                  </div>
-                </td>
-              </tr>
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        </svg>
+                        <span>Xóa</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
               ))
             ) : (
               <tr>
                 <td colSpan={15}>
                   <div className="empty-state">
                     <h3>Không tìm thấy sản phẩm phù hợp</h3>
-                    <p>Hãy thử từ khóa khác hoặc xóa bộ lọc tìm kiếm hiện tại.</p>
+                    <p>
+                      Hãy thử từ khóa khác hoặc xóa bộ lọc tìm kiếm hiện tại.
+                    </p>
                   </div>
                 </td>
               </tr>
