@@ -260,7 +260,7 @@
   box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
 }
 
-.products-table-container {
+.products-page .products-table-container {
   background: white;
   border-radius: 8px;
   overflow: hidden;
@@ -272,7 +272,7 @@
   overflow-x: auto;
 }
 
-.data-table {
+.products-page .data-table {
   width: 100%;
   min-width: 1620px;
   border-collapse: collapse;
@@ -300,14 +300,14 @@
   object-fit: cover;
 }
 
-.data-table thead {
+.products-page .data-table thead {
   background: #f9fafb;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
-.data-table th {
+.products-page .data-table th {
   padding: 12px 20px;
   text-align: left;
   font-size: 12px;
@@ -319,7 +319,7 @@
   white-space: nowrap;
 }
 
-.data-table td {
+.products-page .data-table td {
   padding: 14px 20px;
   font-size: 14px;
   color: #111827;
@@ -327,27 +327,27 @@
   background: #ffffff;
 }
 
-.data-table tbody tr {
+.products-page .data-table tbody tr {
   background: #ffffff;
 }
 
-.data-table tbody tr:nth-child(even) {
+.products-page .data-table tbody tr:nth-child(even) {
   background: #f8fafc;
 }
 
-.data-table tbody tr:nth-child(even) td {
+.products-page .data-table tbody tr:nth-child(even) td {
   background: #f8fafc;
 }
 
-.data-table tbody tr:hover {
+.products-page .data-table tbody tr:hover {
   background: #eef6ff;
 }
 
-.data-table tbody tr:hover td {
+.products-page .data-table tbody tr:hover td {
   background: #eef6ff;
 }
 
-.data-table tbody tr:last-child td {
+.products-page .data-table tbody tr:last-child td {
   border-bottom: none;
 }
 

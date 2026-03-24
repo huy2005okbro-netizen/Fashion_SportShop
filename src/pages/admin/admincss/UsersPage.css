@@ -42,7 +42,7 @@
   box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
 }
 
-.table-container {
+.page-content .table-container {
   background: white;
   border-radius: 8px;
   overflow: hidden;
@@ -53,20 +53,20 @@
   border: 1px solid #e5e7eb;
 }
 
-.data-table {
+.page-content .data-table {
   width: 100%;
   border-collapse: collapse;
   background: #ffffff;
 }
 
-.data-table thead {
+.page-content .data-table thead {
   background: #ffffff;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
-.data-table th {
+.page-content .data-table th {
   padding: 12px 20px;
   text-align: left;
   font-size: 12px;
@@ -78,7 +78,7 @@
   white-space: nowrap;
 }
 
-.data-table td {
+.page-content .data-table td {
   padding: 14px 20px;
   font-size: 14px;
   color: #111827;
@@ -86,21 +86,21 @@
   background: #ffffff;
 }
 
-.data-table tbody,
-.data-table tbody tr,
-.data-table tbody tr td {
+.page-content .data-table tbody,
+.page-content .data-table tbody tr,
+.page-content .data-table tbody tr td {
   background: #ffffff;
 }
 
-.data-table tbody tr:hover {
+.page-content .data-table tbody tr:hover {
   background: #ffffff;
 }
 
-.data-table tbody tr:hover td {
+.page-content .data-table tbody tr:hover td {
   background: #ffffff;
 }
 
-.data-table tbody tr:last-child td {
+.page-content .data-table tbody tr:last-child td {
   border-bottom: none;
 }
 

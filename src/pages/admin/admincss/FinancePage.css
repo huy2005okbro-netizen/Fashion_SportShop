@@ -42,7 +42,7 @@
   box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
 }
 
-.table-container {
+.page-content .table-container {
   background: white;
   border-radius: 8px;
   overflow: hidden;
@@ -53,19 +53,19 @@
   border: 1px solid #e5e7eb;
 }
 
-.data-table {
+.page-content .data-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.data-table thead {
+.page-content .data-table thead {
   background: #f9fafb;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
-.data-table th {
+.page-content .data-table th {
   padding: 12px 20px;
   text-align: left;
   font-size: 12px;
@@ -77,18 +77,18 @@
   white-space: nowrap;
 }
 
-.data-table td {
+.page-content .data-table td {
   padding: 14px 20px;
   font-size: 14px;
   color: #374151;
   border-bottom: 1px solid #f3f4f6;
 }
 
-.data-table tbody tr:hover {
+.page-content .data-table tbody tr:hover {
   background: #f9fafb;
 }
 
-.data-table tbody tr:last-child td {
+.page-content .data-table tbody tr:last-child td {
   border-bottom: none;
 }
 
