@@ -1,46 +1,154 @@
+import { useMemo, useState } from "react";
 import "../admincss/ProductsPage.css";
 
+type ProductStatus = "Còn hàng" | "Sắp hết" | "Hết hàng";
+
+type Product = {
+  id: number;
+  sku: string;
+  name: string;
+  category: string;
+  sport: string;
+  brand: string;
+  gender: string;
+  size: string;
+  color: string;
+  material: string;
+  price: number;
+  stock: number;
+  status: ProductStatus;
+  description: string;
+};
+
+const initialProducts: Product[] = [
+  {
+    id: 1,
+    sku: "SPT-TSHIRT-001",
+    name: "Áo thun tập gym nam Dry-Fit",
+    category: "Áo thể thao",
+    sport: "Gym",
+    brand: "Nike",
+    gender: "Nam",
+    size: "L",
+    color: "Đen",
+    material: "Polyester co giãn 4 chiều",
+    price: 299000,
+    stock: 150,
+    status: "Còn hàng",
+    description: "Áo thấm hút mồ hôi tốt, phù hợp tập gym và chạy bộ.",
+  },
+  {
+    id: 2,
+    sku: "SPT-PANTS-002",
+    name: "Quần jogger bóng đá nữ",
+    category: "Quần thể thao",
+    sport: "Bóng đá",
+    brand: "Adidas",
+    gender: "Nữ",
+    size: "M",
+    color: "Xanh navy",
+    material: "Vải mè thoáng khí",
+    price: 599000,
+    stock: 80,
+    status: "Còn hàng",
+    description: "Quần co giãn nhẹ, thiết kế linh hoạt khi vận động cường độ cao.",
+  },
+  {
+    id: 3,
+    sku: "SPT-DRESS-003",
+    name: "Váy tennis nữ Pro Active",
+    category: "Váy thể thao",
+    sport: "Tennis",
+    brand: "Yonex",
+    gender: "Nữ",
+    size: "S",
+    color: "Trắng",
+    material: "Polyester tái chế",
+    price: 450000,
+    stock: 5,
+    status: "Sắp hết",
+    description: "Thiết kế nhẹ, thoáng và có quần bảo hộ bên trong.",
+  },
+  {
+    id: 4,
+    sku: "SPT-JACKET-004",
+    name: "Áo khoác chạy bộ Wind Shield",
+    category: "Áo khoác thể thao",
+    sport: "Chạy bộ",
+    brand: "Puma",
+    gender: "Unisex",
+    size: "XL",
+    color: "Xám",
+    material: "Nylon chống gió",
+    price: 1200000,
+    stock: 0,
+    status: "Hết hàng",
+    description: "Áo khoác mỏng nhẹ chống gió, thích hợp chạy sáng sớm.",
+  },
+];
+
+const emptyForm: Omit<Product, "id" | "status"> = {
+  sku: "",
+  name: "",
+  category: "Áo thể thao",
+  sport: "Gym",
+  brand: "",
+  gender: "Unisex",
+  size: "M",
+  color: "",
+  material: "",
+  price: 0,
+  stock: 0,
+  description: "",
+};
+
+const formatCurrency = (value: number) => `${value.toLocaleString("vi-VN")}đ`;
+
+const getStatusFromStock = (stock: number): ProductStatus => {
+  if (stock <= 0) return "Hết hàng";
+  if (stock <= 10) return "Sắp hết";
+  return "Còn hàng";
+};
+
 function ProductsPage() {
-  const products = [
-    {
-      id: 1,
-      name: "Áo thun nam basic",
-      category: "Áo",
-      price: "299,000đ",
-      stock: 150,
-      status: "Còn hàng",
-    },
-    {
-      id: 2,
-      name: "Quần jean nữ",
-      category: "Quần",
-      price: "599,000đ",
-      stock: 80,
-      status: "Còn hàng",
-    },
-    {
-      id: 3,
-      name: "Váy maxi hoa",
-      category: "Váy",
-      price: "450,000đ",
-      stock: 5,
-      status: "Sắp hết",
-    },
-    {
-      id: 4,
-      name: "Áo khoác dạ",
-      category: "Áo khoác",
-      price: "1,200,000đ",
-      stock: 0,
-      status: "Hết hàng",
-    },
-  ];
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState(emptyForm);
+
+  const nextId = useMemo(
+    () => (products.length ? Math.max(...products.map((product) => product.id)) + 1 : 1),
+    [products],
+  );
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "price" || name === "stock" ? Number(value) : value,
+    }));
+  };
+
+  const handleAddProduct = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const newProduct: Product = {
+      id: nextId,
+      ...formData,
+      status: getStatusFromStock(formData.stock),
+    };
+
+    setProducts((prev) => [newProduct, ...prev]);
+    setFormData(emptyForm);
+    setShowForm(false);
+  };
 
   return (
     <div className="page-content">
       <div className="page-header">
         <h2>Quản lý sản phẩm</h2>
-        <button className="btn-primary">
+        <button className="btn-primary" onClick={() => setShowForm((prev) => !prev)}>
           <svg
             width="18"
             height="18"
@@ -52,17 +160,134 @@ function ProductsPage() {
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          Thêm sản phẩm
+          {showForm ? "Đóng form" : "Thêm sản phẩm"}
         </button>
       </div>
+
+      {showForm && (
+        <form className="product-form-card" onSubmit={handleAddProduct}>
+          <div className="form-header">
+            <div>
+              <h3>Thêm sản phẩm đồ thể thao</h3>
+              <p>Nhập đầy đủ thuộc tính sản phẩm để quản lý kho và bán hàng dễ hơn.</p>
+            </div>
+          </div>
+
+          <div className="product-form-grid">
+            <label>
+              SKU
+              <input name="sku" value={formData.sku} onChange={handleChange} placeholder="VD: SPT-SHOE-005" required />
+            </label>
+            <label>
+              Tên sản phẩm
+              <input name="name" value={formData.name} onChange={handleChange} placeholder="VD: Giày chạy bộ Air Zoom" required />
+            </label>
+            <label>
+              Danh mục
+              <select name="category" value={formData.category} onChange={handleChange}>
+                <option>Áo thể thao</option>
+                <option>Quần thể thao</option>
+                <option>Giày thể thao</option>
+                <option>Áo khoác thể thao</option>
+                <option>Phụ kiện thể thao</option>
+                <option>Váy thể thao</option>
+              </select>
+            </label>
+            <label>
+              Môn thể thao
+              <select name="sport" value={formData.sport} onChange={handleChange}>
+                <option>Gym</option>
+                <option>Chạy bộ</option>
+                <option>Bóng đá</option>
+                <option>Cầu lông</option>
+                <option>Tennis</option>
+                <option>Bóng rổ</option>
+                <option>Yoga</option>
+              </select>
+            </label>
+            <label>
+              Thương hiệu
+              <input name="brand" value={formData.brand} onChange={handleChange} placeholder="Nike, Adidas..." required />
+            </label>
+            <label>
+              Giới tính
+              <select name="gender" value={formData.gender} onChange={handleChange}>
+                <option>Nam</option>
+                <option>Nữ</option>
+                <option>Unisex</option>
+                <option>Trẻ em</option>
+              </select>
+            </label>
+            <label>
+              Kích thước
+              <select name="size" value={formData.size} onChange={handleChange}>
+                <option>XS</option>
+                <option>S</option>
+                <option>M</option>
+                <option>L</option>
+                <option>XL</option>
+                <option>XXL</option>
+                <option>39</option>
+                <option>40</option>
+                <option>41</option>
+                <option>42</option>
+                <option>43</option>
+              </select>
+            </label>
+            <label>
+              Màu sắc
+              <input name="color" value={formData.color} onChange={handleChange} placeholder="Đen, Trắng, Xanh..." required />
+            </label>
+            <label>
+              Chất liệu
+              <input name="material" value={formData.material} onChange={handleChange} placeholder="Polyester, cotton..." required />
+            </label>
+            <label>
+              Giá bán
+              <input name="price" type="number" min="0" value={formData.price} onChange={handleChange} required />
+            </label>
+            <label>
+              Tồn kho
+              <input name="stock" type="number" min="0" value={formData.stock} onChange={handleChange} required />
+            </label>
+            <label className="full-width">
+              Mô tả sản phẩm
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows={4}
+                placeholder="Mô tả ngắn về công năng, chất liệu, mục đích sử dụng..."
+                required
+              />
+            </label>
+          </div>
+
+          <div className="form-actions">
+            <button type="button" className="btn-secondary" onClick={() => setShowForm(false)}>
+              Hủy
+            </button>
+            <button type="submit" className="btn-primary">
+              Lưu sản phẩm
+            </button>
+          </div>
+        </form>
+      )}
 
       <div className="table-container">
         <table className="data-table">
           <thead>
             <tr>
               <th>ID</th>
+              <th>SKU</th>
               <th>Tên sản phẩm</th>
               <th>Danh mục</th>
+              <th>Môn</th>
+              <th>Thương hiệu</th>
+              <th>Giới tính</th>
+              <th>Size</th>
+              <th>Màu</th>
+              <th>Chất liệu</th>
               <th>Giá</th>
               <th>Tồn kho</th>
               <th>Trạng thái</th>
@@ -73,9 +298,16 @@ function ProductsPage() {
             {products.map((product) => (
               <tr key={product.id}>
                 <td>{product.id}</td>
+                <td>{product.sku}</td>
                 <td>{product.name}</td>
                 <td>{product.category}</td>
-                <td>{product.price}</td>
+                <td>{product.sport}</td>
+                <td>{product.brand}</td>
+                <td>{product.gender}</td>
+                <td>{product.size}</td>
+                <td>{product.color}</td>
+                <td>{product.material}</td>
+                <td>{formatCurrency(product.price)}</td>
                 <td>{product.stock}</td>
                 <td>
                   <span
