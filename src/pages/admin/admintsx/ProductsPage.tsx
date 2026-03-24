@@ -121,6 +121,29 @@ const getStatusFromStock = (stock: number): ProductStatus => {
   return "Còn hàng";
 };
 
+const sportBrands = [
+  "Nike",
+  "Adidas",
+  "Puma",
+  "Yonex",
+  "Asics",
+  "New Balance",
+  "Reebok",
+  "Saucony",
+  "Brooks",
+  "Mizuno",
+  "Victor",
+  "Wilson",
+  "Spalding",
+  "Head",
+  "Babolat",
+  "Fila",
+  "Converse",
+  "Vans",
+  "Under Armour",
+  "Skechers",
+];
+
 function ProductsPage() {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [searchTerm, setSearchTerm] = useState("");
@@ -421,13 +444,19 @@ function ProductsPage() {
               </label>
               <label>
                 Thương hiệu
-                <input
+                <select
                   name="brand"
                   value={formData.brand}
                   onChange={handleChange}
-                  placeholder="Nike, Adidas..."
                   required
-                />
+                >
+                  <option value="">-- Chọn thương hiệu --</option>
+                  {sportBrands.map((brandName) => (
+                    <option key={brandName} value={brandName}>
+                      {brandName}
+                    </option>
+                  ))}
+                </select>
               </label>
               <label>
                 Giới tính
