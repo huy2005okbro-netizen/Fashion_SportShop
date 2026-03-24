@@ -24,7 +24,8 @@ type Product = {
 const initialProducts: Product[] = [
   {
     id: 1,
-    image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=300&q=80",
+    image:
+      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=300&q=80",
     sku: "SPT-TSHIRT-001",
     name: "Áo thun tập gym nam Dry-Fit",
     category: "Áo thể thao",
@@ -41,7 +42,8 @@ const initialProducts: Product[] = [
   },
   {
     id: 2,
-    image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=300&q=80",
+    image:
+      "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=300&q=80",
     sku: "SPT-PANTS-002",
     name: "Quần jogger bóng đá nữ",
     category: "Quần thể thao",
@@ -59,7 +61,8 @@ const initialProducts: Product[] = [
   },
   {
     id: 3,
-    image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=300&q=80",
+    image:
+      "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=300&q=80",
     sku: "SPT-DRESS-003",
     name: "Váy tennis nữ Pro Active",
     category: "Váy thể thao",
@@ -76,7 +79,8 @@ const initialProducts: Product[] = [
   },
   {
     id: 4,
-    image: "https://images.unsplash.com/photo-1526676037777-05a232554f77?auto=format&fit=crop&w=300&q=80",
+    image:
+      "https://images.unsplash.com/photo-1526676037777-05a232554f77?auto=format&fit=crop&w=300&q=80",
     sku: "SPT-JACKET-004",
     name: "Áo khoác chạy bộ Wind Shield",
     category: "Áo khoác thể thao",
@@ -197,7 +201,10 @@ function ProductsPage() {
       </div>
 
       {showForm && (
-        <div className="product-form-overlay" onClick={() => setShowForm(false)}>
+        <div
+          className="product-form-overlay"
+          onClick={() => setShowForm(false)}
+        >
           <form
             className="product-form-card"
             onSubmit={handleAddProduct}
@@ -230,14 +237,17 @@ function ProductsPage() {
                     <button
                       type="button"
                       className="btn-secondary"
-                      onClick={() => setFormData((prev) => ({ ...prev, image: "" }))}
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, image: "" }))
+                      }
                     >
                       Xóa ảnh
                     </button>
                   </div>
                 ) : (
                   <p className="image-helper-text">
-                    Chưa có ảnh. Hãy tải ảnh để hiển thị trong danh sách sản phẩm.
+                    Chưa có ảnh. Hãy tải ảnh để hiển thị trong danh sách sản
+                    phẩm.
                   </p>
                 )}
               </label>
@@ -317,7 +327,11 @@ function ProductsPage() {
               </label>
               <label>
                 Kích thước
-                <select name="size" value={formData.size} onChange={handleChange}>
+                <select
+                  name="size"
+                  value={formData.size}
+                  onChange={handleChange}
+                >
                   <option>XS</option>
                   <option>S</option>
                   <option>M</option>
