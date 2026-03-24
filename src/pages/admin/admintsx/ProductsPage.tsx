@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../admincss/ProductsPage.css";
 
 type ProductStatus = "Còn hàng" | "Sắp hết" | "Hết hàng";
@@ -196,6 +196,7 @@ function ProductsPage() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
   const [editingProductId, setEditingProductId] = useState<number | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const nextId = useMemo(
     () =>
@@ -260,6 +261,14 @@ function ProductsPage() {
     setFormData(emptyForm);
   };
 
+  const handleOpenDetail = (product: Product) => {
+    setSelectedProduct(product);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedProduct(null);
+  };
+
   const handleOpenAddForm = () => {
     setEditingProductId(null);
     setFormData(emptyForm);
@@ -296,6 +305,7 @@ function ProductsPage() {
     }
 
     setProducts((prev) => prev.filter((product) => product.id !== productId));
+    setSelectedProduct((prev) => (prev?.id === productId ? null : prev));
   };
 
   const handleAddProduct = (event: React.FormEvent<HTMLFormElement>) => {
@@ -325,6 +335,55 @@ function ProductsPage() {
 
     handleCloseForm();
   };
+
+  useEffect(() => {
+    if (!selectedProduct && !showForm) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      if (showForm) {
+        handleCloseForm();
+        return;
+      }
+
+      handleCloseDetail();
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [selectedProduct, showForm]);
+
+  useEffect(() => {
+    if (!selectedProduct) {
+      return;
+    }
+
+    const latestSelectedProduct = products.find(
+      (product) => product.id === selectedProduct.id,
+    );
+
+    if (!latestSelectedProduct) {
+      setSelectedProduct(null);
+      return;
+    }
+
+    if (latestSelectedProduct !== selectedProduct) {
+      setSelectedProduct(latestSelectedProduct);
+    }
+  }, [products, selectedProduct]);
 
   return (
     <div className="page-content products-page">
@@ -555,19 +614,13 @@ function ProductsPage() {
               </label>
               <label>
                 Chất liệu
-                <select
+                <input
                   name="material"
                   value={formData.material}
                   onChange={handleChange}
+                  placeholder="Polyester, cotton..."
                   required
-                >
-                  <option value="">-- Chọn chất liệu --</option>
-                  {sportMaterials.map((materialName) => (
-                    <option key={materialName} value={materialName}>
-                      {materialName}
-                    </option>
-                  ))}
-                </select>
+                />
               </label>
               <label>
                 Giá bán
@@ -622,6 +675,124 @@ function ProductsPage() {
         </div>
       )}
 
+      {selectedProduct && (
+        <div className="product-detail-overlay" onClick={handleCloseDetail}>
+          <div
+            className="product-detail-card"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="product-detail-header">
+              <div>
+                <span className="product-detail-label">Chi tiết sản phẩm</span>
+                <h3>{selectedProduct.name}</h3>
+                <p>
+                  Mã SKU: <strong>{selectedProduct.sku}</strong>
+                </p>
+              </div>
+              <button
+                type="button"
+                className="product-detail-close"
+                onClick={handleCloseDetail}
+                aria-label="Đóng chi tiết sản phẩm"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="product-detail-body">
+              <div className="product-detail-image-wrap">
+                {selectedProduct.image ? (
+                  <img
+                    src={selectedProduct.image}
+                    alt={selectedProduct.name}
+                    className="product-detail-image"
+                  />
+                ) : (
+                  <div className="product-detail-image-empty">Chưa có ảnh</div>
+                )}
+              </div>
+
+              <div className="product-detail-info">
+                <div className="product-detail-price-row">
+                  <strong>{formatCurrency(selectedProduct.price)}</strong>
+                  <span
+                    className={`badge ${
+                      selectedProduct.status === "Còn hàng"
+                        ? "badge-green"
+                        : selectedProduct.status === "Sắp hết"
+                          ? "badge-orange"
+                          : "badge-red"
+                    }`}
+                  >
+                    {selectedProduct.status}
+                  </span>
+                </div>
+
+                <div className="product-detail-grid">
+                  <div>
+                    <span>Danh mục</span>
+                    <strong>{selectedProduct.category}</strong>
+                  </div>
+                  <div>
+                    <span>Môn thể thao</span>
+                    <strong>{selectedProduct.sport}</strong>
+                  </div>
+                  <div>
+                    <span>Thương hiệu</span>
+                    <strong>{selectedProduct.brand}</strong>
+                  </div>
+                  <div>
+                    <span>Giới tính</span>
+                    <strong>{selectedProduct.gender}</strong>
+                  </div>
+                  <div>
+                    <span>Size</span>
+                    <strong>{selectedProduct.size}</strong>
+                  </div>
+                  <div>
+                    <span>Màu sắc</span>
+                    <strong>{selectedProduct.color}</strong>
+                  </div>
+                  <div>
+                    <span>Chất liệu</span>
+                    <strong>{selectedProduct.material}</strong>
+                  </div>
+                  <div>
+                    <span>Tồn kho</span>
+                    <strong>{selectedProduct.stock} sản phẩm</strong>
+                  </div>
+                </div>
+
+                <div className="product-detail-description">
+                  <span>Mô tả sản phẩm</span>
+                  <p>{selectedProduct.description}</p>
+                </div>
+
+                <div className="product-detail-actions">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={handleCloseDetail}
+                  >
+                    Đóng
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={() => {
+                      handleCloseDetail();
+                      handleOpenEditForm(selectedProduct);
+                    }}
+                  >
+                    Sửa sản phẩm
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="products-table-container">
         <table className="data-table">
           <thead>
@@ -646,10 +817,14 @@ function ProductsPage() {
           <tbody>
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
-                <tr key={product.id}>
+                <tr
+                  key={product.id}
+                  className="product-row"
+                  onClick={() => handleOpenDetail(product)}
+                >
                   <td>{product.id}</td>
                   <td>
-                    <div className="product-image-cell">
+                    <div className="product-image-cell product-image-clickable">
                       {product.image ? (
                         <img src={product.image} alt={product.name} />
                       ) : (
@@ -658,7 +833,18 @@ function ProductsPage() {
                     </div>
                   </td>
                   <td>{product.sku}</td>
-                  <td>{product.name}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="product-name-button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleOpenDetail(product);
+                      }}
+                    >
+                      {product.name}
+                    </button>
+                  </td>
                   <td>{product.category}</td>
                   <td>{product.sport}</td>
                   <td>{product.brand}</td>
@@ -687,7 +873,10 @@ function ProductsPage() {
                         type="button"
                         className="btn-action btn-action-edit"
                         title="Sửa"
-                        onClick={() => handleOpenEditForm(product)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleOpenEditForm(product);
+                        }}
                       >
                         <svg
                           width="16"
@@ -706,7 +895,10 @@ function ProductsPage() {
                         type="button"
                         className="btn-action btn-action-delete"
                         title="Xóa"
-                        onClick={() => handleDeleteProduct(product.id)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleDeleteProduct(product.id);
+                        }}
                       >
                         <svg
                           width="16"

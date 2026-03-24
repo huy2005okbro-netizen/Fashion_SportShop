@@ -167,6 +167,7 @@
     transform 0.2s,
     box-shadow 0.3s;
   margin-top: 8px;
+  width: 100%;
 }
 
 .submit-btn:hover {
@@ -175,6 +176,36 @@
 }
 
 .submit-btn:active {
+  transform: translateY(0);
+}
+
+.view-products-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.3s;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.view-products-btn:hover {
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+.view-products-btn:active {
   transform: translateY(0);
 }
 
