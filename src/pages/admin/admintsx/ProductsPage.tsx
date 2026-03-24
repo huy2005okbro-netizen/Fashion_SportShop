@@ -144,6 +144,29 @@ const sportBrands = [
   "Skechers",
 ];
 
+const sportColors = [
+  "Đen",
+  "Trắng",
+  "Đỏ",
+  "Xanh dương",
+  "Xanh navy",
+  "Xanh lá",
+  "Vàng",
+  "Cam",
+  "Tím",
+  "Hồng",
+  "Ghi",
+  "Xám",
+  "Nâu",
+  "Beige",
+  "Khaki",
+  "Đỏ tía",
+  "Lục",
+  "Đất",
+  "Kem",
+  "Teal",
+];
+
 function ProductsPage() {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [searchTerm, setSearchTerm] = useState("");
@@ -493,13 +516,19 @@ function ProductsPage() {
               </label>
               <label>
                 Màu sắc
-                <input
+                <select
                   name="color"
                   value={formData.color}
                   onChange={handleChange}
-                  placeholder="Đen, Trắng, Xanh..."
                   required
-                />
+                >
+                  <option value="">-- Chọn màu --</option>
+                  {sportColors.map((colorName) => (
+                    <option key={colorName} value={colorName}>
+                      {colorName}
+                    </option>
+                  ))}
+                </select>
               </label>
               <label>
                 Chất liệu
