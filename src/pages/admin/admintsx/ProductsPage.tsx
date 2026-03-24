@@ -123,8 +123,10 @@ const getStatusFromStock = (stock: number): ProductStatus => {
 
 function ProductsPage() {
   const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
+  const [editingProductId, setEditingProductId] = useState<number | null>(null);
 
   const nextId = useMemo(
     () =>
@@ -133,6 +135,26 @@ function ProductsPage() {
         : 1,
     [products],
   );
+
+  const filteredProducts = useMemo(() => {
+    const keyword = searchTerm.trim().toLowerCase();
+
+    if (!keyword) {
+      return products;
+    }
+
+    return products.filter((product) =>
+      [
+        product.sku,
+        product.name,
+        product.category,
+        product.sport,
+        product.brand,
+        product.gender,
+        product.color,
+      ].some((value) => value.toLowerCase().includes(keyword)),
+    );
+  }, [products, searchTerm]);
 
   const handleChange = (
     event: React.ChangeEvent<
@@ -163,18 +185,74 @@ function ProductsPage() {
     reader.readAsDataURL(file);
   };
 
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingProductId(null);
+    setFormData(emptyForm);
+  };
+
+  const handleOpenAddForm = () => {
+    setEditingProductId(null);
+    setFormData(emptyForm);
+    setShowForm(true);
+  };
+
+  const handleOpenEditForm = (product: Product) => {
+    setEditingProductId(product.id);
+    setFormData({
+      image: product.image,
+      sku: product.sku,
+      name: product.name,
+      category: product.category,
+      sport: product.sport,
+      brand: product.brand,
+      gender: product.gender,
+      size: product.size,
+      color: product.color,
+      material: product.material,
+      price: product.price,
+      stock: product.stock,
+      description: product.description,
+    });
+    setShowForm(true);
+  };
+
+  const handleDeleteProduct = (productId: number) => {
+    const confirmed = window.confirm("Bạn có chắc muốn xóa sản phẩm này không?");
+
+    if (!confirmed) {
+      return;
+    }
+
+    setProducts((prev) => prev.filter((product) => product.id !== productId));
+  };
+
   const handleAddProduct = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const newProduct: Product = {
-      id: nextId,
-      ...formData,
-      status: getStatusFromStock(formData.stock),
-    };
+    if (editingProductId !== null) {
+      setProducts((prev) =>
+        prev.map((product) =>
+          product.id === editingProductId
+            ? {
+                ...product,
+                ...formData,
+                status: getStatusFromStock(formData.stock),
+              }
+            : product,
+        ),
+      );
+    } else {
+      const newProduct: Product = {
+        id: nextId,
+        ...formData,
+        status: getStatusFromStock(formData.stock),
+      };
 
-    setProducts((prev) => [...prev, newProduct]);
-    setFormData(emptyForm);
-    setShowForm(false);
+      setProducts((prev) => [...prev, newProduct]);
+    }
+
+    handleCloseForm();
   };
 
   return (
@@ -183,7 +261,7 @@ function ProductsPage() {
         <h2>Quản lý sản phẩm</h2>
         <button
           className="btn-primary"
-          onClick={() => setShowForm((prev) => !prev)}
+          onClick={handleOpenAddForm}
         >
           <svg
             width="18"
@@ -196,14 +274,51 @@ function ProductsPage() {
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          {showForm ? "Đóng form" : "Thêm sản phẩm"}
+          Thêm sản phẩm
         </button>
+      </div>
+
+      <div className="products-toolbar">
+        <div className="search-box">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder="Tìm theo tên, SKU, danh mục, thương hiệu..."
+          />
+        </div>
+
+        <div className="toolbar-summary">
+          <span>
+            Hiển thị <strong>{filteredProducts.length}</strong> / {products.length} sản phẩm
+          </span>
+          {searchTerm && (
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => setSearchTerm("")}
+            >
+              Xóa tìm kiếm
+            </button>
+          )}
+        </div>
       </div>
 
       {showForm && (
         <div
           className="product-form-overlay"
-          onClick={() => setShowForm(false)}
+          onClick={handleCloseForm}
         >
           <form
             className="product-form-card"
@@ -212,10 +327,15 @@ function ProductsPage() {
           >
             <div className="form-header">
               <div>
-                <h3>Thêm sản phẩm đồ thể thao</h3>
+                <h3>
+                  {editingProductId !== null
+                    ? "Chỉnh sửa sản phẩm"
+                    : "Thêm sản phẩm đồ thể thao"}
+                </h3>
                 <p>
-                  Nhập đầy đủ thuộc tính sản phẩm để quản lý kho và bán hàng dễ
-                  hơn.
+                  {editingProductId !== null
+                    ? "Cập nhật đầy đủ thông tin để quản lý sản phẩm chính xác hơn."
+                    : "Nhập đầy đủ thuộc tính sản phẩm để quản lý kho và bán hàng dễ hơn."}
                 </p>
               </div>
             </div>
@@ -404,12 +524,12 @@ function ProductsPage() {
               <button
                 type="button"
                 className="btn-secondary"
-                onClick={() => setShowForm(false)}
+                onClick={handleCloseForm}
               >
                 Hủy
               </button>
               <button type="submit" className="btn-primary">
-                Lưu sản phẩm
+                {editingProductId !== null ? "Cập nhật sản phẩm" : "Lưu sản phẩm"}
               </button>
             </div>
           </form>
@@ -438,7 +558,8 @@ function ProductsPage() {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
               <tr key={product.id}>
                 <td>{product.id}</td>
                 <td>
@@ -476,7 +597,12 @@ function ProductsPage() {
                 </td>
                 <td>
                   <div className="action-buttons">
-                    <button className="btn-icon" title="Sửa">
+                    <button
+                      type="button"
+                      className="btn-action btn-action-edit"
+                      title="Sửa"
+                      onClick={() => handleOpenEditForm(product)}
+                    >
                       <svg
                         width="16"
                         height="16"
@@ -488,8 +614,14 @@ function ProductsPage() {
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                       </svg>
+                      <span>Sửa</span>
                     </button>
-                    <button className="btn-icon" title="Xóa">
+                    <button
+                      type="button"
+                      className="btn-action btn-action-delete"
+                      title="Xóa"
+                      onClick={() => handleDeleteProduct(product.id)}
+                    >
                       <svg
                         width="16"
                         height="16"
@@ -501,11 +633,22 @@ function ProductsPage() {
                         <polyline points="3 6 5 6 21 6" />
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                       </svg>
+                      <span>Xóa</span>
                     </button>
                   </div>
                 </td>
               </tr>
-            ))}
+              ))
+            ) : (
+              <tr>
+                <td colSpan={15}>
+                  <div className="empty-state">
+                    <h3>Không tìm thấy sản phẩm phù hợp</h3>
+                    <p>Hãy thử từ khóa khác hoặc xóa bộ lọc tìm kiếm hiện tại.</p>
+                  </div>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
