@@ -1,13 +1,21 @@
 import { useState } from "react";
 import "./SellerLogin.css";
 
-function SellerLogin() {
+interface SellerLoginProps {
+  onLoginSuccess?: () => void;
+}
+
+function SellerLogin({ onLoginSuccess }: SellerLoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Seller login:", { email, password });
+    // Gọi callback khi đăng nhập thành công
+    if (onLoginSuccess) {
+      onLoginSuccess();
+    }
   };
 
   return (
