@@ -167,6 +167,29 @@ const sportColors = [
   "Teal",
 ];
 
+const sportMaterials = [
+  "Polyester co giãn 4 chiều",
+  "Polyester tái chế",
+  "Cotton 100%",
+  "Cotton mix",
+  "Nylon chống gió",
+  "Vải mè thoáng khí",
+  "Vải thun co giãn",
+  "Vải mụn",
+  "Linen mix",
+  "Nylon",
+  "Spandex",
+  "Elastane",
+  "Vải jean",
+  "Twill cotton",
+  "Fleece",
+  "Mesh thoáng khí",
+  "Satin",
+  "Neoprene",
+  "Gore-Tex",
+  "Tactical nylon",
+];
+
 function ProductsPage() {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [searchTerm, setSearchTerm] = useState("");
@@ -532,13 +555,19 @@ function ProductsPage() {
               </label>
               <label>
                 Chất liệu
-                <input
+                <select
                   name="material"
                   value={formData.material}
                   onChange={handleChange}
-                  placeholder="Polyester, cotton..."
                   required
-                />
+                >
+                  <option value="">-- Chọn chất liệu --</option>
+                  {sportMaterials.map((materialName) => (
+                    <option key={materialName} value={materialName}>
+                      {materialName}
+                    </option>
+                  ))}
+                </select>
               </label>
               <label>
                 Giá bán
