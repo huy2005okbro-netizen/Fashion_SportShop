@@ -42,6 +42,156 @@
   box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
 }
 
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.category-form-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.category-form-card {
+  width: min(560px, 100%);
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  color: #1f2937;
+}
+
+.category-form-card h3,
+.category-form-card p,
+.category-form-card label {
+  color: #1f2937;
+}
+
+.category-form-field input,
+.category-form-field select,
+.category-form-field textarea {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #1f2937;
+}
+
+.category-form-field textarea {
+  min-height: 80px;
+}
+
+.category-form-field select {
+  height: 40px;
+}
+
+.category-form-actions .btn-primary {
+  background: #10b981;
+}
+
+.category-form-actions .btn-primary:hover {
+  background: #059669;
+}
+
+.category-form-actions .btn-secondary {
+  background: #f3f4f6;
+  color: #1f2937;
+  border: 1px solid #d1d5db;
+}
+
+.category-form-actions .btn-secondary:hover {
+  background: #e5e7eb;
+}
+.category-form-header {
+  margin-bottom: 18px;
+}
+
+.category-form-header h3 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  color: #111827;
+}
+
+.category-form-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.category-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.category-form-field input,
+.category-form-field select,
+.category-form-field textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111827;
+  box-sizing: border-box;
+}
+
+.category-form-field input:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.category-slug-preview {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.category-slug-preview span {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.category-slug-preview strong {
+  color: #111827;
+}
+
+.category-form-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
 .page-content .table-container {
   background: white;
   border-radius: 8px;
@@ -82,8 +232,20 @@
   font-size: 14px;
   color: #374151;
   border-bottom: 1px solid #f3f4f6;
+  vertical-align: top;
 }
 
+.two-col-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .two-col-row {
+    grid-template-columns: 1fr;
+  }
+}
 .page-content .data-table tbody tr:hover {
   background: #f9fafb;
 }
@@ -137,4 +299,29 @@
 .btn-icon:hover {
   background: #ecf0f1;
   color: #2c3e50;
+}
+
+.btn-icon-danger:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .category-form-overlay {
+    padding: 12px;
+  }
+
+  .category-form-card {
+    padding: 16px;
+  }
+
+  .category-form-actions {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
 }

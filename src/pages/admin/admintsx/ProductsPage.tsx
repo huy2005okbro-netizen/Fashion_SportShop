@@ -1,202 +1,43 @@
 import { useEffect, useMemo, useState } from "react";
+import {
+  getStatusFromStock,
+  initialProducts,
+  sportBrands,
+  sportColors,
+} from "../adminData";
+import type { Product } from "../adminData";
+import { useCategories } from "../CategoryContext";
 import "../admincss/ProductsPage.css";
-
-type ProductStatus = "Còn hàng" | "Sắp hết" | "Hết hàng";
-
-type Product = {
-  id: number;
-  image: string;
-  sku: string;
-  name: string;
-  category: string;
-  sport: string;
-  brand: string;
-  gender: string;
-  size: string;
-  color: string;
-  material: string;
-  price: number;
-  stock: number;
-  status: ProductStatus;
-  description: string;
-};
-
-const initialProducts: Product[] = [
-  {
-    id: 1,
-    image:
-      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=300&q=80",
-    sku: "SPT-TSHIRT-001",
-    name: "Áo thun tập gym nam Dry-Fit",
-    category: "Áo thể thao",
-    sport: "Gym",
-    brand: "Nike",
-    gender: "Nam",
-    size: "L",
-    color: "Đen",
-    material: "Polyester co giãn 4 chiều",
-    price: 299000,
-    stock: 150,
-    status: "Còn hàng",
-    description: "Áo thấm hút mồ hôi tốt, phù hợp tập gym và chạy bộ.",
-  },
-  {
-    id: 2,
-    image:
-      "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=300&q=80",
-    sku: "SPT-PANTS-002",
-    name: "Quần jogger bóng đá nữ",
-    category: "Quần thể thao",
-    sport: "Bóng đá",
-    brand: "Adidas",
-    gender: "Nữ",
-    size: "M",
-    color: "Xanh navy",
-    material: "Vải mè thoáng khí",
-    price: 599000,
-    stock: 80,
-    status: "Còn hàng",
-    description:
-      "Quần co giãn nhẹ, thiết kế linh hoạt khi vận động cường độ cao.",
-  },
-  {
-    id: 3,
-    image:
-      "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=300&q=80",
-    sku: "SPT-DRESS-003",
-    name: "Váy tennis nữ Pro Active",
-    category: "Váy thể thao",
-    sport: "Tennis",
-    brand: "Yonex",
-    gender: "Nữ",
-    size: "S",
-    color: "Trắng",
-    material: "Polyester tái chế",
-    price: 450000,
-    stock: 5,
-    status: "Sắp hết",
-    description: "Thiết kế nhẹ, thoáng và có quần bảo hộ bên trong.",
-  },
-  {
-    id: 4,
-    image:
-      "https://images.unsplash.com/photo-1526676037777-05a232554f77?auto=format&fit=crop&w=300&q=80",
-    sku: "SPT-JACKET-004",
-    name: "Áo khoác chạy bộ Wind Shield",
-    category: "Áo khoác thể thao",
-    sport: "Chạy bộ",
-    brand: "Puma",
-    gender: "Unisex",
-    size: "XL",
-    color: "Xám",
-    material: "Nylon chống gió",
-    price: 1200000,
-    stock: 0,
-    status: "Hết hàng",
-    description: "Áo khoác mỏng nhẹ chống gió, thích hợp chạy sáng sớm.",
-  },
-];
-
-const emptyForm: Omit<Product, "id" | "status"> = {
-  image: "",
-  sku: "",
-  name: "",
-  category: "Áo thể thao",
-  sport: "Gym",
-  brand: "",
-  gender: "Unisex",
-  size: "M",
-  color: "",
-  material: "",
-  price: 0,
-  stock: 0,
-  description: "",
-};
 
 const formatCurrency = (value: number) => `${value.toLocaleString("vi-VN")}đ`;
 
-const getStatusFromStock = (stock: number): ProductStatus => {
-  if (stock <= 0) return "Hết hàng";
-  if (stock <= 10) return "Sắp hết";
-  return "Còn hàng";
-};
-
-const sportBrands = [
-  "Nike",
-  "Adidas",
-  "Puma",
-  "Yonex",
-  "Asics",
-  "New Balance",
-  "Reebok",
-  "Saucony",
-  "Brooks",
-  "Mizuno",
-  "Victor",
-  "Wilson",
-  "Spalding",
-  "Head",
-  "Babolat",
-  "Fila",
-  "Converse",
-  "Vans",
-  "Under Armour",
-  "Skechers",
-];
-
-const sportColors = [
-  "Đen",
-  "Trắng",
-  "Đỏ",
-  "Xanh dương",
-  "Xanh navy",
-  "Xanh lá",
-  "Vàng",
-  "Cam",
-  "Tím",
-  "Hồng",
-  "Ghi",
-  "Xám",
-  "Nâu",
-  "Beige",
-  "Khaki",
-  "Đỏ tía",
-  "Lục",
-  "Đất",
-  "Kem",
-  "Teal",
-];
-
-const sportMaterials = [
-  "Polyester co giãn 4 chiều",
-  "Polyester tái chế",
-  "Cotton 100%",
-  "Cotton mix",
-  "Nylon chống gió",
-  "Vải mè thoáng khí",
-  "Vải thun co giãn",
-  "Vải mụn",
-  "Linen mix",
-  "Nylon",
-  "Spandex",
-  "Elastane",
-  "Vải jean",
-  "Twill cotton",
-  "Fleece",
-  "Mesh thoáng khí",
-  "Satin",
-  "Neoprene",
-  "Gore-Tex",
-  "Tactical nylon",
-];
-
 function ProductsPage() {
+  const { categories } = useCategories();
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState(emptyForm);
+  const [formData, setFormData] = useState<Omit<Product, "id" | "status">>({
+    image: "",
+    sku: "",
+    name: "",
+    category: categories[0]?.name ?? "",
+    sport: "Gym",
+    brand: "",
+    gender: "Unisex",
+    size: "M",
+    color: "",
+    material: "",
+    price: 0,
+    stock: 0,
+    description: "",
+  });
   const [editingProductId, setEditingProductId] = useState<number | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const categoryOptions = useMemo(
+    () => categories.filter((category) => category.status === "Hoạt động"),
+    [categories],
+  );
 
   const nextId = useMemo(
     () =>
@@ -258,7 +99,21 @@ function ProductsPage() {
   const handleCloseForm = () => {
     setShowForm(false);
     setEditingProductId(null);
-    setFormData(emptyForm);
+    setFormData({
+      image: "",
+      sku: "",
+      name: "",
+      category: categories[0]?.name ?? "",
+      sport: "Gym",
+      brand: "",
+      gender: "Unisex",
+      size: "M",
+      color: "",
+      material: "",
+      price: 0,
+      stock: 0,
+      description: "",
+    });
   };
 
   const handleOpenDetail = (product: Product) => {
@@ -271,7 +126,21 @@ function ProductsPage() {
 
   const handleOpenAddForm = () => {
     setEditingProductId(null);
-    setFormData(emptyForm);
+    setFormData({
+      image: "",
+      sku: "",
+      name: "",
+      category: categories[0]?.name ?? "",
+      sport: "Gym",
+      brand: "",
+      gender: "Unisex",
+      size: "M",
+      color: "",
+      material: "",
+      price: 0,
+      stock: 0,
+      description: "",
+    });
     setShowForm(true);
   };
 
@@ -522,13 +391,14 @@ function ProductsPage() {
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
+                  required
                 >
-                  <option>Áo thể thao</option>
-                  <option>Quần thể thao</option>
-                  <option>Giày thể thao</option>
-                  <option>Áo khoác thể thao</option>
-                  <option>Phụ kiện thể thao</option>
-                  <option>Váy thể thao</option>
+                  <option value="">-- Chọn danh mục --</option>
+                  {categoryOptions.map((category) => (
+                    <option key={category.id} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
                 </select>
               </label>
               <label>
