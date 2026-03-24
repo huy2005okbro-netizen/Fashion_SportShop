@@ -535,7 +535,7 @@ function ProductsPage() {
         </div>
       )}
 
-      <div className="table-container products-table-container">
+      <div className="products-table-container">
         <table className="data-table">
           <thead>
             <tr>
