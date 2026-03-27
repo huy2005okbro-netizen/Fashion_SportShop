@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 export type Category = {
@@ -12,6 +12,8 @@ export type Category = {
   productCount: number;
   status: string;
 };
+
+const LOCAL_STORAGE_CATEGORY_KEY = "btldata_categories";
 
 const initialCategories: Category[] = [
   {
@@ -84,7 +86,30 @@ const CategoryContext = createContext<CategoryContextType | undefined>(
 );
 
 export function CategoryProvider({ children }: { children: ReactNode }) {
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [categories, setCategories] = useState<Category[]>(() => {
+    if (typeof window === "undefined") return initialCategories;
+
+    try {
+      const saved = localStorage.getItem(LOCAL_STORAGE_CATEGORY_KEY);
+      if (!saved) return initialCategories;
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
+    } catch {
+      // ignore parse errors
+    }
+
+    return initialCategories;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem(
+      LOCAL_STORAGE_CATEGORY_KEY,
+      JSON.stringify(categories),
+    );
+  }, [categories]);
 
   const addCategory = (newCategory: Omit<Category, "id">) => {
     const id = categories.length

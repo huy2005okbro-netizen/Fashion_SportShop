@@ -13,7 +13,25 @@ const formatCurrency = (value: number) => `${value.toLocaleString("vi-VN")}đ`;
 
 function ProductsPage() {
   const { categories } = useCategories();
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>(() => {
+    if (typeof window === "undefined") {
+      return initialProducts;
+    }
+
+    try {
+      const saved = localStorage.getItem("btldata_products");
+      if (saved) {
+        const parsed = JSON.parse(saved) as Product[];
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+      }
+    } catch {
+      // ignore invalid JSON
+    }
+
+    return initialProducts;
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<Omit<Product, "id" | "status">>({
@@ -204,6 +222,11 @@ function ProductsPage() {
 
     handleCloseForm();
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem("btldata_products", JSON.stringify(products));
+  }, [products]);
 
   useEffect(() => {
     if (!selectedProduct && !showForm) {
