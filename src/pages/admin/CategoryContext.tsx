@@ -1,6 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
+export type CategoryAttribute = {
+  id: string;
+  name: string;
+};
+
 export type Category = {
   id: number;
   name: string;
@@ -14,6 +19,7 @@ export type Category = {
 };
 
 const LOCAL_STORAGE_CATEGORY_KEY = "btldata_categories";
+const LOCAL_STORAGE_ATTRIBUTES_KEY = "btldata_category_attributes";
 
 const initialCategories: Category[] = [
   {
@@ -79,6 +85,9 @@ interface CategoryContextType {
   updateCategory: (id: number, category: Partial<Category>) => void;
   deleteCategory: (id: number) => void;
   getCategoryById: (id: number) => Category | undefined;
+  getCategoryAttributes: (categoryId: number) => CategoryAttribute[];
+  addCategoryAttribute: (categoryId: number, attributeName: string) => void;
+  deleteCategoryAttribute: (categoryId: number, attributeId: string) => void;
 }
 
 const CategoryContext = createContext<CategoryContextType | undefined>(
@@ -103,6 +112,25 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
     return initialCategories;
   });
 
+  const [attributes, setAttributes] = useState<
+    Record<number, CategoryAttribute[]>
+  >(() => {
+    if (typeof window === "undefined") return {};
+
+    try {
+      const saved = localStorage.getItem(LOCAL_STORAGE_ATTRIBUTES_KEY);
+      if (!saved) return {};
+      const parsed = JSON.parse(saved);
+      if (typeof parsed === "object" && parsed !== null) {
+        return parsed;
+      }
+    } catch {
+      // ignore parse errors
+    }
+
+    return {};
+  });
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     localStorage.setItem(
@@ -110,6 +138,14 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
       JSON.stringify(categories),
     );
   }, [categories]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem(
+      LOCAL_STORAGE_ATTRIBUTES_KEY,
+      JSON.stringify(attributes),
+    );
+  }, [attributes]);
 
   const addCategory = (newCategory: Omit<Category, "id">) => {
     const id = categories.length
@@ -132,6 +168,31 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
     return categories.find((cat) => cat.id === id);
   };
 
+  const getCategoryAttributes = (categoryId: number) => {
+    return attributes[categoryId] || [];
+  };
+
+  const addCategoryAttribute = (categoryId: number, attributeName: string) => {
+    const newAttribute: CategoryAttribute = {
+      id: Date.now().toString(),
+      name: attributeName,
+    };
+
+    setAttributes((prev) => ({
+      ...prev,
+      [categoryId]: [...(prev[categoryId] || []), newAttribute],
+    }));
+  };
+
+  const deleteCategoryAttribute = (categoryId: number, attributeId: string) => {
+    setAttributes((prev) => ({
+      ...prev,
+      [categoryId]: (prev[categoryId] || []).filter(
+        (attr) => attr.id !== attributeId,
+      ),
+    }));
+  };
+
   return (
     <CategoryContext.Provider
       value={{
@@ -140,6 +201,9 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
         updateCategory,
         deleteCategory,
         getCategoryById,
+        getCategoryAttributes,
+        addCategoryAttribute,
+        deleteCategoryAttribute,
       }}
     >
       {children}
