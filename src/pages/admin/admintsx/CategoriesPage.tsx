@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useCategories, type Category } from "../CategoryContext";
 import "../admincss/CategoriesPage.css";
 
@@ -15,6 +15,7 @@ function createSlug(value: string) {
 function CategoriesPage() {
   const { categories, addCategory, updateCategory, deleteCategory } =
     useCategories();
+  const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [categoryName, setCategoryName] = useState("");
   const [categoryCode, setCategoryCode] = useState("");
@@ -99,6 +100,17 @@ function CategoriesPage() {
     handleCloseForm();
   };
 
+  const filteredCategories = useMemo(() => {
+    const keyword = searchTerm.trim().toLowerCase();
+    if (!keyword) return categories;
+
+    return categories.filter((category) => {
+      const text =
+        `${category.name} ${category.code} ${category.description}`.toLowerCase();
+      return text.includes(keyword);
+    });
+  }, [categories, searchTerm]);
+
   const handleDeleteCategory = (categoryId: number) => {
     const category = categories.find((item) => item.id === categoryId);
 
@@ -130,6 +142,23 @@ function CategoriesPage() {
     <div className="page-content">
       <div className="page-header">
         <h2>Quản lý danh mục</h2>
+        <div className="category-search-wrapper">
+          <input
+            type="text"
+            placeholder="Tìm danh mục theo tên, mã, mô tả..."
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => setSearchTerm("")}
+            >
+              Xóa
+            </button>
+          )}
+        </div>
         <button className="btn-primary" onClick={handleOpenAddForm}>
           <svg
             width="18"
@@ -265,7 +294,7 @@ function CategoriesPage() {
             </tr>
           </thead>
           <tbody>
-            {categories.map((category) => (
+            {filteredCategories.map((category) => (
               <tr key={category.id}>
                 <td>{category.id}</td>
                 <td>{category.name}</td>

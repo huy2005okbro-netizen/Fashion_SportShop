@@ -218,6 +218,29 @@
 .page-content .data-table th {
   padding: 12px 20px;
   text-align: left;
+}
+
+.category-search-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 12px;
+}
+
+.category-search-wrapper input {
+  min-width: 240px;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.category-search-wrapper input:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
   font-size: 12px;
   font-weight: 600;
   color: #6b7280;
