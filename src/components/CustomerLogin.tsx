@@ -12,7 +12,29 @@ function CustomerLogin({ onViewProductDetail }: CustomerLoginProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Customer login:", { email, password });
+
+    if (!email || !password) {
+      alert("Vui lòng điền đầy đủ email và mật khẩu.");
+      return;
+    }
+
+    if (isLogin) {
+      // TODO: thay bằng xác thực backend thực tế (API)
+      if (!email.includes("@")) {
+        alert("Email không hợp lệ, vui lòng nhập đúng định dạng.");
+        return;
+      }
+
+      alert("Đăng nhập thành công! Đang chuyển đến danh mục sản phẩm...");
+      onViewProductDetail?.();
+    } else {
+      // Đăng ký thử nghiệm
+      alert("Đăng ký thành công! Bạn có thể đăng nhập ngay.");
+      setIsLogin(true);
+    }
+
+    setEmail("");
+    setPassword("");
   };
 
   return (
