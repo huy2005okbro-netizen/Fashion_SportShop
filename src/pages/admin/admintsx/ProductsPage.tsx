@@ -12,7 +12,7 @@ import "../admincss/ProductsPage.css";
 const formatCurrency = (value: number) => `${value.toLocaleString("vi-VN")}đ`;
 
 function ProductsPage() {
-  const { categories } = useCategories();
+  const { categories, getCategoryAttributes } = useCategories();
   const [products, setProducts] = useState<Product[]>(() => {
     if (typeof window === "undefined") {
       return initialProducts;
@@ -34,7 +34,9 @@ function ProductsPage() {
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState<Omit<Product, "id" | "status">>({
+  const [formData, setFormData] = useState<
+    Omit<Product, "id" | "status"> & { attributes?: Record<string, string> }
+  >({
     image: "",
     sku: "",
     name: "",
@@ -48,6 +50,7 @@ function ProductsPage() {
     price: 0,
     stock: 0,
     description: "",
+    attributes: {},
   });
   const [editingProductId, setEditingProductId] = useState<number | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -55,6 +58,16 @@ function ProductsPage() {
   const categoryOptions = useMemo(
     () => categories.filter((category) => category.status === "Hoạt động"),
     [categories],
+  );
+
+  const selectedCategory = useMemo(
+    () => categories.find((category) => category.name === formData.category),
+    [categories, formData.category],
+  );
+
+  const selectedCategoryAttributes = useMemo(
+    () => (selectedCategory ? getCategoryAttributes(selectedCategory.id) : []),
+    [selectedCategory, getCategoryAttributes],
   );
 
   const nextId = useMemo(
@@ -91,6 +104,42 @@ function ProductsPage() {
     >,
   ) => {
     const { name, value } = event.target;
+
+    if (name === "category") {
+      const category = categories.find((cat) => cat.name === value);
+      const newAttributes: Record<string, string> = {};
+
+      if (category) {
+        getCategoryAttributes(category.id).forEach((attr) => {
+          newAttributes[attr.name] = "";
+        });
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        category: value,
+        attributes: newAttributes,
+      }));
+      return;
+    }
+
+    if (name.startsWith("attr_")) {
+      const attrId = name.replace("attr_", "");
+      const attribute = selectedCategoryAttributes.find(
+        (attr) => attr.id === attrId,
+      );
+      if (!attribute) return;
+
+      setFormData((prev) => ({
+        ...prev,
+        attributes: {
+          ...prev.attributes,
+          [attribute.name]: value,
+        },
+      }));
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: name === "price" || name === "stock" ? Number(value) : value,
@@ -131,6 +180,7 @@ function ProductsPage() {
       price: 0,
       stock: 0,
       description: "",
+      attributes: {},
     });
   };
 
@@ -158,6 +208,7 @@ function ProductsPage() {
       price: 0,
       stock: 0,
       description: "",
+      attributes: {},
     });
     setShowForm(true);
   };
@@ -178,6 +229,7 @@ function ProductsPage() {
       price: product.price,
       stock: product.stock,
       description: product.description,
+      attributes: product.attributes || {},
     });
     setShowForm(true);
   };
@@ -515,6 +567,21 @@ function ProductsPage() {
                   required
                 />
               </label>
+              {selectedCategoryAttributes.length > 0 && (
+                <div className="dynamic-attributes">
+                  {selectedCategoryAttributes.map((attribute) => (
+                    <label key={attribute.id}>
+                      {attribute.name}
+                      <input
+                        name={`attr_${attribute.id}`}
+                        value={formData.attributes?.[attribute.name] ?? ""}
+                        onChange={handleChange}
+                        placeholder={`Nhập ${attribute.name.toLowerCase()}...`}
+                      />
+                    </label>
+                  ))}
+                </div>
+              )}
               <label>
                 Giá bán
                 <input
@@ -656,6 +723,23 @@ function ProductsPage() {
                   </div>
                 </div>
 
+                {selectedProduct.attributes &&
+                  Object.keys(selectedProduct.attributes).length > 0 && (
+                    <div className="product-detail-attributes">
+                      <h4>Thuộc tính sản phẩm</h4>
+                      <ul>
+                        {Object.entries(selectedProduct.attributes).map(
+                          ([key, val]) => (
+                            <li key={key}>
+                              <strong>{key}:</strong>{" "}
+                              {val || "(chưa thiết lập)"}
+                            </li>
+                          ),
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
                 <div className="product-detail-description">
                   <span>Mô tả sản phẩm</span>
                   <p>{selectedProduct.description}</p>
@@ -701,6 +785,7 @@ function ProductsPage() {
               <th>Size</th>
               <th>Màu</th>
               <th>Chất liệu</th>
+              <th>Thuộc tính</th>
               <th>Giá</th>
               <th>Tồn kho</th>
               <th>Trạng thái</th>
@@ -745,6 +830,17 @@ function ProductsPage() {
                   <td>{product.size}</td>
                   <td>{product.color}</td>
                   <td>{product.material}</td>
+                  <td>
+                    {product.attributes &&
+                    Object.keys(product.attributes).length > 0
+                      ? Object.entries(product.attributes)
+                          .map(
+                            ([key, value]) =>
+                              `${key}: ${value || "(chưa thiết lập)"}`,
+                          )
+                          .join("; ")
+                      : "-"}
+                  </td>
                   <td>{formatCurrency(product.price)}</td>
                   <td>{product.stock}</td>
                   <td>

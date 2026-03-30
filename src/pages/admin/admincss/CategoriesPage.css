@@ -240,7 +240,7 @@
   border-color: #10b981;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
 }
-
+.page-content .data-table th {
   font-size: 12px;
   font-weight: 600;
   color: #6b7280;
@@ -591,7 +591,6 @@
 .attribute-modal-actions .btn-secondary:hover {
   background: #e5e7eb;
 }
-
 
 @media (max-width: 768px) {
   .category-form-overlay {

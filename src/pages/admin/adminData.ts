@@ -25,6 +25,7 @@ export type Product = {
   stock: number;
   status: ProductStatus;
   description: string;
+  attributes?: Record<string, string>;
 };
 
 export const initialCategories: Category[] = [
