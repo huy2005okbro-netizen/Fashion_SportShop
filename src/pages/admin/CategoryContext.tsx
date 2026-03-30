@@ -11,7 +11,7 @@ export type Category = {
   name: string;
   code: string;
   icon: string;
-  parentId: number | null;
+  parentId?: number | null;
   slug: string;
   description: string;
   productCount: number;
@@ -27,7 +27,6 @@ const initialCategories: Category[] = [
     name: "Áo",
     code: "DM01",
     icon: "👕",
-    parentId: null,
     slug: "ao",
     description: "Danh mục áo thể thao",
     productCount: 245,
@@ -38,7 +37,6 @@ const initialCategories: Category[] = [
     name: "Quần",
     code: "DM02",
     icon: "👖",
-    parentId: null,
     slug: "quan",
     description: "Danh mục quần thể thao",
     productCount: 189,
@@ -49,7 +47,6 @@ const initialCategories: Category[] = [
     name: "Váy",
     code: "DM03",
     icon: "👗",
-    parentId: null,
     slug: "vay",
     description: "Danh mục váy thể thao",
     productCount: 156,
@@ -60,7 +57,6 @@ const initialCategories: Category[] = [
     name: "Giày",
     code: "DM04",
     icon: "👟",
-    parentId: null,
     slug: "giay",
     description: "Danh mục giày thể thao",
     productCount: 312,
@@ -71,7 +67,6 @@ const initialCategories: Category[] = [
     name: "Phụ kiện",
     code: "DM05",
     icon: "🎒",
-    parentId: null,
     slug: "phu-kien",
     description: "Danh mục phụ kiện thể thao",
     productCount: 198,

@@ -27,7 +27,6 @@ function CategoriesPage() {
   const [categoryName, setCategoryName] = useState("");
   const [categoryCode, setCategoryCode] = useState("");
   const [categoryIcon, setCategoryIcon] = useState("🏷️");
-  const [categoryParentId, setCategoryParentId] = useState<number | null>(null);
   const [categoryDescription, setCategoryDescription] = useState("");
   const [editingCategoryId, setEditingCategoryId] = useState<number | null>(
     null,
@@ -43,7 +42,6 @@ function CategoriesPage() {
     setCategoryName("");
     setCategoryCode("");
     setCategoryIcon("🏷️");
-    setCategoryParentId(null);
     setCategoryDescription("");
     setEditingCategoryId(null);
   };
@@ -59,7 +57,6 @@ function CategoriesPage() {
     setCategoryName(category.name);
     setCategoryCode(category.code);
     setCategoryIcon(category.icon);
-    setCategoryParentId(category.parentId);
     setCategoryDescription(category.description);
     setShowForm(true);
   };
@@ -89,7 +86,6 @@ function CategoriesPage() {
         name,
         code: categoryCode,
         icon: categoryIcon,
-        parentId: categoryParentId,
         description: categoryDescription,
         slug: createSlug(name),
       });
@@ -102,7 +98,6 @@ function CategoriesPage() {
       code:
         categoryCode || `DM${String(categories.length + 1).padStart(2, "0")}`,
       icon: categoryIcon || "🏷️",
-      parentId: categoryParentId,
       description: categoryDescription,
       slug: createSlug(name),
       productCount: 0,
@@ -139,17 +134,6 @@ function CategoriesPage() {
     }
 
     deleteCategory(categoryId);
-    setOpenMenuId(null);
-  };
-
-  const handleAddSubcategory = (parentCategory: Category) => {
-    setEditingCategoryId(null);
-    setCategoryName("");
-    setCategoryCode("");
-    setCategoryIcon("🏷️");
-    setCategoryParentId(parentCategory.id);
-    setCategoryDescription("");
-    setShowForm(true);
     setOpenMenuId(null);
   };
 
@@ -277,27 +261,6 @@ function CategoriesPage() {
             </div>
 
             <label className="category-form-field">
-              Danh mục cha
-              <select
-                value={categoryParentId ?? ""}
-                onChange={(event) =>
-                  setCategoryParentId(
-                    event.target.value ? Number(event.target.value) : null,
-                  )
-                }
-              >
-                <option value="">Không có</option>
-                {categories
-                  .filter((cat) => cat.id !== editingCategoryId)
-                  .map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  ))}
-              </select>
-            </label>
-
-            <label className="category-form-field">
               Mô tả
               <textarea
                 rows={3}
@@ -338,7 +301,6 @@ function CategoriesPage() {
               <th>Tên danh mục</th>
               <th>Mã</th>
               <th>Icon</th>
-              <th>Danh mục cha</th>
               <th>Mô tả</th>
               <th>Slug</th>
               <th>Số sản phẩm</th>
@@ -353,11 +315,6 @@ function CategoriesPage() {
                 <td>{category.name}</td>
                 <td>{category.code}</td>
                 <td>{category.icon}</td>
-                <td>
-                  {category.parentId
-                    ? categories.find((c) => c.id === category.parentId)?.name
-                    : "-"}
-                </td>
                 <td>{category.description}</td>
                 <td>
                   <code>{category.slug}</code>
@@ -411,24 +368,7 @@ function CategoriesPage() {
                           </svg>
                           Chính sửa
                         </button>
-                        <button
-                          type="button"
-                          className="dropdown-item"
-                          onClick={() => handleAddSubcategory(category)}
-                        >
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                          >
-                            <line x1="12" y1="5" x2="12" y2="19" />
-                            <line x1="5" y1="12" x2="19" y2="12" />
-                          </svg>
-                          Thêm danh mục con
-                        </button>
+
                         <button
                           type="button"
                           className="dropdown-item"
@@ -475,7 +415,7 @@ function CategoriesPage() {
         </table>
       </div>
 
-      {showAttributeModal && selectedCategoryForAttributes && (
+      {showAttributeModal && (
         <div
           className="attribute-modal-overlay"
           onClick={handleCloseAttributeModal}
@@ -485,8 +425,19 @@ function CategoriesPage() {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="attribute-modal-header">
-              <h3>Quản lý thuộc tính - {selectedCategoryForAttributes.name}</h3>
-              <p>Thêm hoặc chỉnh sửa thuộc tính cho danh mục này</p>
+              {selectedCategoryForAttributes ? (
+                <>
+                  <h3>
+                    Quản lý thuộc tính - {selectedCategoryForAttributes.name}
+                  </h3>
+                  <p>Thêm hoặc chỉnh sửa thuộc tính cho danh mục này</p>
+                </>
+              ) : (
+                <>
+                  <h3>Chọn danh mục để quản lý thuộc tính</h3>
+                  <p>Nhấn vào danh mục để xem và thêm thuộc tính.</p>
+                </>
+              )}
               <button
                 className="modal-close-btn"
                 onClick={handleCloseAttributeModal}
@@ -494,62 +445,104 @@ function CategoriesPage() {
                 ✕
               </button>
             </div>
+            {selectedCategoryForAttributes ? (
+              <>
+                <div className="attribute-input-section">
+                  <input
+                    type="text"
+                    placeholder="Tên thuộc tính mới..."
+                    value={newAttributeName}
+                    onChange={(event) =>
+                      setNewAttributeName(event.target.value)
+                    }
+                    onKeyPress={(event) => {
+                      if (event.key === "Enter") {
+                        handleAddAttribute();
+                      }
+                    }}
+                  />
+                  <button
+                    className="btn-add-attribute"
+                    onClick={handleAddAttribute}
+                  >
+                    + Thêm
+                  </button>
+                </div>
 
-            <div className="attribute-input-section">
-              <input
-                type="text"
-                placeholder="Tên thuộc tính mới..."
-                value={newAttributeName}
-                onChange={(event) => setNewAttributeName(event.target.value)}
-                onKeyPress={(event) => {
-                  if (event.key === "Enter") {
-                    handleAddAttribute();
-                  }
-                }}
-              />
-              <button
-                className="btn-add-attribute"
-                onClick={handleAddAttribute}
-              >
-                + Thêm
-              </button>
-            </div>
-
-            <div className="attribute-list-section">
-              <h4>Thuộc tính hiện có</h4>
-              {getCategoryAttributes(selectedCategoryForAttributes.id)
-                .length === 0 ? (
-                <p className="no-attributes">
-                  Chưa có thuộc tính nào. Hãy thêm thuộc tính mới.
-                </p>
-              ) : (
-                <div className="attribute-list">
-                  {getCategoryAttributes(selectedCategoryForAttributes.id).map(
-                    (attr) => (
-                      <div key={attr.id} className="attribute-item">
-                        <span>{attr.name}</span>
-                        <button
-                          className="btn-delete-attribute"
-                          onClick={() => handleDeleteAttribute(attr.id)}
-                          title="Xóa"
-                        >
-                          🗑️
-                        </button>
-                      </div>
-                    ),
+                <div className="attribute-list-section">
+                  <h4>Thuộc tính hiện có</h4>
+                  {getCategoryAttributes(selectedCategoryForAttributes.id)
+                    .length === 0 ? (
+                    <p className="no-attributes">
+                      Chưa có thuộc tính nào. Hãy thêm thuộc tính mới.
+                    </p>
+                  ) : (
+                    <div className="attribute-list">
+                      {getCategoryAttributes(
+                        selectedCategoryForAttributes.id,
+                      ).map((attr) => (
+                        <div key={attr.id} className="attribute-item">
+                          <span>{attr.name}</span>
+                          <button
+                            className="btn-delete-attribute"
+                            onClick={() => handleDeleteAttribute(attr.id)}
+                            title="Xóa"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
-              )}
-            </div>
 
-            <div className="attribute-modal-actions">
-              <button
-                className="btn-secondary"
-                onClick={handleCloseAttributeModal}
-              >
-                Đóng
-              </button>
-            </div>
+                <div className="attribute-modal-actions">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => setSelectedCategoryForAttributes(null)}
+                  >
+                    Chọn danh mục khác
+                  </button>
+                  <button
+                    className="btn-secondary"
+                    onClick={handleCloseAttributeModal}
+                  >
+                    Đóng
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="attribute-category-list">
+                <h4>Danh sách danh mục</h4>
+                {categories.length === 0 ? (
+                  <p>Chưa có danh mục nào.</p>
+                ) : (
+                  <div className="category-list">
+                    {categories.map((category) => (
+                      <button
+                        type="button"
+                        key={category.id}
+                        className="category-select-button"
+                        onClick={() =>
+                          setSelectedCategoryForAttributes(category)
+                        }
+                      >
+                        {category.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <div className="attribute-modal-actions">
+                  <button
+                    className="btn-secondary"
+                    onClick={handleCloseAttributeModal}
+                  >
+                    Đóng
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
