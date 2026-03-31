@@ -1,5 +1,10 @@
 import { useState } from "react";
 import "./CustomerLogin.css";
+import {
+  createCustomerNameFromEmail,
+  findUserByEmail,
+  upsertCustomerAccount,
+} from "../shared/userAccounts";
 
 interface CustomerLoginProps {
   onViewProductDetail?: () => void;
@@ -25,10 +30,20 @@ function CustomerLogin({ onViewProductDetail }: CustomerLoginProps) {
         return;
       }
 
+      const existingUser = findUserByEmail(email);
+
+      if (existingUser?.status === "Khóa") {
+        alert("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin.");
+        return;
+      }
+
+      upsertCustomerAccount(email, createCustomerNameFromEmail(email));
+
       alert("Đăng nhập thành công! Đang chuyển đến danh mục sản phẩm...");
       onViewProductDetail?.();
     } else {
       // Đăng ký thử nghiệm
+      upsertCustomerAccount(email, createCustomerNameFromEmail(email));
       alert("Đăng ký thành công! Bạn có thể đăng nhập ngay.");
       setIsLogin(true);
     }
