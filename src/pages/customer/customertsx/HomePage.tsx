@@ -5,29 +5,16 @@ function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
-    {
-      id: 1,
-      image: "/images/banner1.jpg",
-    },
-    {
-      id: 2,
-      image: "/images/banner2.jpg",
-    },
-    {
-      id: 3,
-      image: "/images/banner3.jpg",
-    },
-    {
-      id: 4,
-      image: "/images/banner4.jpg",
-    },
+    { id: 1, image: "/images/banner1.jpg" },
+    { id: 2, image: "/images/banner2.jpg" },
+    { id: 3, image: "/images/banner3.jpg" },
+    { id: 4, image: "/images/banner4.jpg" },
   ];
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
-
     return () => clearInterval(timer);
   }, [slides.length]);
 
@@ -37,12 +24,10 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      {/* Hero Banner Slider - Chỉ hiển thị ảnh */}
+      {/* Hero Banner Slider */}
       <section
         className="hero-slider-simple"
-        style={{
-          backgroundImage: `url(${slides[currentSlide].image})`,
-        }}
+        style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
       >
         <div className="slider-dots">
           {slides.map((_, index) => (
@@ -67,7 +52,9 @@ function HomePage() {
                   alt="Giày thể thao"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
-                    e.currentTarget.nextElementSibling.style.display = "flex";
+                    const placeholder = e.currentTarget
+                      .nextElementSibling as HTMLElement;
+                    if (placeholder) placeholder.style.display = "flex";
                   }}
                 />
                 <div className="image-placeholder" style={{ display: "none" }}>
@@ -83,7 +70,9 @@ function HomePage() {
                   alt="Áo thể thao"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
-                    e.currentTarget.nextElementSibling.style.display = "flex";
+                    const placeholder = e.currentTarget
+                      .nextElementSibling as HTMLElement;
+                    if (placeholder) placeholder.style.display = "flex";
                   }}
                 />
                 <div className="image-placeholder" style={{ display: "none" }}>
@@ -99,7 +88,9 @@ function HomePage() {
                   alt="Quần thể thao"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
-                    e.currentTarget.nextElementSibling.style.display = "flex";
+                    const placeholder = e.currentTarget
+                      .nextElementSibling as HTMLElement;
+                    if (placeholder) placeholder.style.display = "flex";
                   }}
                 />
                 <div className="image-placeholder" style={{ display: "none" }}>
@@ -115,7 +106,9 @@ function HomePage() {
                   alt="Phụ kiện"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
-                    e.currentTarget.nextElementSibling.style.display = "flex";
+                    const placeholder = e.currentTarget
+                      .nextElementSibling as HTMLElement;
+                    if (placeholder) placeholder.style.display = "flex";
                   }}
                 />
                 <div className="image-placeholder" style={{ display: "none" }}>
@@ -131,11 +124,13 @@ function HomePage() {
                   alt="Mũ & Nón"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
-                    e.currentTarget.nextElementSibling.style.display = "flex";
+                    const placeholder = e.currentTarget
+                      .nextElementSibling as HTMLElement;
+                    if (placeholder) placeholder.style.display = "flex";
                   }}
                 />
                 <div className="image-placeholder" style={{ display: "none" }}>
-                  �
+                  🧢
                 </div>
               </div>
               <h3>Mũ & Nón</h3>
@@ -147,7 +142,9 @@ function HomePage() {
                   alt="Găng tay"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
-                    e.currentTarget.nextElementSibling.style.display = "flex";
+                    const placeholder = e.currentTarget
+                      .nextElementSibling as HTMLElement;
+                    if (placeholder) placeholder.style.display = "flex";
                   }}
                 />
                 <div className="image-placeholder" style={{ display: "none" }}>
@@ -166,22 +163,100 @@ function HomePage() {
           <h2 className="section-title">THƯƠNG HIỆU NỔI BẬT</h2>
           <div className="brands-grid">
             <div className="brand-card">
-              <div className="brand-logo">NIKE</div>
+              <img
+                src="/images/brand-nike.png"
+                alt="NIKE"
+                className="brand-image"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  const placeholder = e.currentTarget
+                    .nextElementSibling as HTMLElement;
+                  if (placeholder) placeholder.style.display = "block";
+                }}
+              />
+              <div className="brand-logo" style={{ display: "none" }}>
+                NIKE
+              </div>
             </div>
             <div className="brand-card">
-              <div className="brand-logo">adidas</div>
+              <img
+                src="/images/brand-adidas.png"
+                alt="adidas"
+                className="brand-image"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  const placeholder = e.currentTarget
+                    .nextElementSibling as HTMLElement;
+                  if (placeholder) placeholder.style.display = "block";
+                }}
+              />
+              <div className="brand-logo" style={{ display: "none" }}>
+                adidas
+              </div>
             </div>
             <div className="brand-card">
-              <div className="brand-logo">PUMA</div>
+              <img
+                src="/images/brand-puma.png"
+                alt="PUMA"
+                className="brand-image"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  const placeholder = e.currentTarget
+                    .nextElementSibling as HTMLElement;
+                  if (placeholder) placeholder.style.display = "block";
+                }}
+              />
+              <div className="brand-logo" style={{ display: "none" }}>
+                PUMA
+              </div>
             </div>
             <div className="brand-card">
-              <div className="brand-logo">UA</div>
+              <img
+                src="/images/brand-ua.png"
+                alt="Under Armour"
+                className="brand-image"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  const placeholder = e.currentTarget
+                    .nextElementSibling as HTMLElement;
+                  if (placeholder) placeholder.style.display = "block";
+                }}
+              />
+              <div className="brand-logo" style={{ display: "none" }}>
+                UA
+              </div>
             </div>
             <div className="brand-card">
-              <div className="brand-logo">NB</div>
+              <img
+                src="/images/brand-nb.png"
+                alt="New Balance"
+                className="brand-image"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  const placeholder = e.currentTarget
+                    .nextElementSibling as HTMLElement;
+                  if (placeholder) placeholder.style.display = "block";
+                }}
+              />
+              <div className="brand-logo" style={{ display: "none" }}>
+                NB
+              </div>
             </div>
             <div className="brand-card">
-              <div className="brand-logo">ASICS</div>
+              <img
+                src="/images/brand-asics.png"
+                alt="ASICS"
+                className="brand-image"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  const placeholder = e.currentTarget
+                    .nextElementSibling as HTMLElement;
+                  if (placeholder) placeholder.style.display = "block";
+                }}
+              />
+              <div className="brand-logo" style={{ display: "none" }}>
+                ASICS
+              </div>
             </div>
           </div>
         </div>
@@ -196,7 +271,7 @@ function HomePage() {
               <div key={item} className="product-card">
                 <div className="product-badge">-30%</div>
                 <div className="product-image">
-                  <div className="image-placeholder">�</div>
+                  <div className="image-placeholder">👟</div>
                 </div>
                 <div className="product-info">
                   <h4>Giày Nike Air Max {item}</h4>
@@ -214,6 +289,90 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-top">
+          <div className="footer-promo">
+            <div className="promo-item">
+              <span className="promo-icon">🎁</span>
+              <span>SUPERSPORTS LUÔN LẮNG NGHE BẠN</span>
+              <button className="promo-btn">Đánh giá ngay</button>
+            </div>
+            <div className="promo-item">
+              <span className="promo-icon">🎟️</span>
+              <span>ĐĂNG KÝ NHẬN NGAY VOUCHER 150K</span>
+              <button className="promo-btn">Đăng ký ngay</button>
+            </div>
+          </div>
+        </div>
+
+        <div className="footer-main">
+          <div className="footer-container">
+            <div className="footer-column">
+              <h4>CÔNG TY TNHH MTV THƯƠNG MẠI THỜI TRANG</h4>
+              <p>Văn phòng: Số 163, Phan Đăng Lưu</p>
+              <p>Phường Cầu Kiều, TP. Hồ Chí Minh</p>
+              <p>Tổng đài: 1900 63 64 01</p>
+            </div>
+
+            <div className="footer-column">
+              <h4>VỀ SUPERSPORTS</h4>
+              <ul>
+                <li>
+                  <a href="#">Giới thiệu</a>
+                </li>
+                <li>
+                  <a href="#">Hệ thống cửa hàng</a>
+                </li>
+                <li>
+                  <a href="#">Thông tin liên hệ</a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="footer-column">
+              <h4>HỖ TRỢ KHÁCH HÀNG</h4>
+              <ul>
+                <li>
+                  <a href="#">Chính sách giao hàng</a>
+                </li>
+                <li>
+                  <a href="#">Chính sách đổi trả</a>
+                </li>
+                <li>
+                  <a href="#">Hướng dẫn mua hàng</a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="footer-column">
+              <h4>Group Business</h4>
+              <ul>
+                <li>
+                  <a href="#">GOJI Việt Nam</a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="footer-column">
+              <h4>PHƯƠNG THỨC THANH TOÁN</h4>
+              <div className="payment-methods">
+                <div className="payment-icon">MOMO</div>
+                <div className="payment-icon">ZaloPay</div>
+                <div className="payment-icon">VNPay</div>
+                <div className="payment-icon">VISA</div>
+                <div className="payment-icon">ATM</div>
+                <div className="payment-icon">COD</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p>© 2024 SUPERSPORTS. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }
