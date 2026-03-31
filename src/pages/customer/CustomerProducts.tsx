@@ -10,7 +10,7 @@ type CustomerProductsProps = {
   onBackToLogin: () => void;
 };
 
-function CustomerProducts({ onBackToLogin }: CustomerProductsProps) {
+function CustomerProducts({ onBackToLogin: _onBackToLogin }: CustomerProductsProps) {
   const heroGallery = [
     {
       image:
@@ -48,43 +48,61 @@ function CustomerProducts({ onBackToLogin }: CustomerProductsProps) {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Tất cả danh mục");
   const [heroIndex, setHeroIndex] = useState(0);
+  const [activeNavItem, setActiveNavItem] = useState("");
+  const [activeProductMenu, setActiveProductMenu] = useState("VỢT CẦU LÔNG");
+  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+  const [selectedCategoryProduct, setSelectedCategoryProduct] = useState<Product | null>(null);
 
   const visibleProducts = useMemo(
     () => customerProducts.filter((product) => product.id !== 4),
     [],
   );
 
-  const categories = useMemo(
-    () => [
-      "Tất cả danh mục",
-      ...new Set(visibleProducts.map((product) => product.category)),
-    ],
-    [visibleProducts],
-  );
-
-  const spotlightProducts = visibleProducts.slice(0, 5);
-  const brandLogos = [
-    "Li-Ning",
-    "Yonex",
-    "Victor",
-    "Mizuno",
-    "Adidas",
-    "Flypower",
+  const productMenuItems = [
+    "VỢT CẦU LÔNG",
+    "GIÀY CẦU LÔNG",
+    "BALO CẦU LÔNG",
+    "BAO VỢT CẦU LÔNG",
+    "PHỤ KIỆN CẦU LÔNG",
+    "TENNIS, BÓNG ĐÁ, BƠI",
+    "VỢT PICKLEBALL",
   ];
 
-  const filteredProducts = visibleProducts.filter((product) => {
-    const matchesKeyword =
-      product.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-      product.brand.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchKeyword.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "Tất cả danh mục" ||
-      product.category === selectedCategory;
-
-    return matchesKeyword && matchesCategory;
-  });
+  const productBrandColumns = [
+    {
+      title: "VỢT CẦU LÔNG YONEX",
+      items: ["Dòng vợt Nanoflare", "Dòng vợt Astrox", "Dòng vợt Duora", "Dòng vợt Nanoray", "Dòng vợt Voltric", "Dòng vợt ArcSaber"],
+    },
+    {
+      title: "VỢT CẦU LÔNG LINING",
+      items: ["Dòng vợt Aeronaut", "Dòng vợt Tectonic", "Dòng vợt Windstorm", "Dòng vợt Calibar", "Dòng vợt Halbertec", "Dòng vợt Axforce"],
+    },
+    {
+      title: "VỢT CẦU LÔNG VICTOR",
+      items: ["Dòng vợt DriveX", "Dòng vợt Hypernano", "Dòng vợt Brave Sword", "Dòng vợt Meteor X", "Dòng vợt Thruster K", "Dòng vợt Jetspeed"],
+    },
+    {
+      title: "VỢT CẦU LÔNG MIZUNO",
+      items: ["Speedflex", "Carbo Pro", "Promax", "Caliber", "JPX", "Fortius"],
+    },
+    {
+      title: "VỢT CẦU LÔNG KUMPOO",
+      items: ["Dòng vợt A", "Dòng vợt B", "Dòng vợt C"],
+    },
+    {
+      title: "VỢT CẦU LÔNG PROACE",
+      items: ["Dòng vợt M", "Dòng vợt N", "Dòng vợt P"],
+    },
+    {
+      title: "VỢT CẦU LÔNG ASHAWAY",
+      items: ["Dòng vợt Q", "Dòng vợt R", "Dòng vợt S"],
+    },
+    {
+      title: "VỢT CẦU LÔNG ADIDAS",
+      items: ["Dòng vợt T", "Dòng vợt U", "Dòng vợt V"],
+    },
+  ];
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -203,11 +221,12 @@ function CustomerProducts({ onBackToLogin }: CustomerProductsProps) {
         </div>
 
         <div className="customer-navbar">
-          {navItems.map((item, index) => (
+          {navItems.map((item) => (
             <button
               key={item}
               type="button"
-              className={`customer-nav-item ${index === 0 ? "active" : ""}`}
+              className={`customer-nav-item ${activeNavItem === item ? "active" : ""}`}
+              onClick={() => setActiveNavItem(item)}
             >
               {item}
             </button>
@@ -236,29 +255,6 @@ function CustomerProducts({ onBackToLogin }: CustomerProductsProps) {
             <div className="customer-hero-content">
               <h1>{currentHero.title}</h1>
               <p>{currentHero.subtitle}</p>
-
-              <div className="customer-brand-badges">
-                {brandLogos.map((brand) => (
-                  <span key={brand}>{brand}</span>
-                ))}
-              </div>
-            </div>
-
-            <div className="customer-hero-side-grid">
-              {spotlightProducts.slice(0, 4).map((product) => (
-                <button
-                  key={product.id}
-                  type="button"
-                  className="customer-hero-side-card"
-                  onClick={() => openProductDetail(product)}
-                >
-                  <img src={product.image} alt={product.name} />
-                  <div>
-                    <strong>{product.brand}</strong>
-                    <span>{product.name}</span>
-                  </div>
-                </button>
-              ))}
             </div>
           </div>
         </div>
@@ -272,113 +268,90 @@ function CustomerProducts({ onBackToLogin }: CustomerProductsProps) {
         </button>
       </section>
 
-      <section className="customer-search-panel">
-        <div className="customer-search-title">
-          <h2>Bạn đang tìm gì?</h2>
-          <p>Chọn danh mục và từ khóa để lọc nhanh sản phẩm</p>
-        </div>
-
-        <div className="customer-search-controls">
-          <select
-            value={selectedCategory}
-            onChange={(event) => setSelectedCategory(event.target.value)}
-          >
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
+      {activeNavItem === "SẢN PHẨM" && (
+        <section className="customer-category-section">
+        <h2 className="customer-category-title">DANH MỤC SẢN PHẨM</h2>
+        <div className="customer-category-grid">
+          <div className="customer-category-menu">
+            {productMenuItems.map((menuItem) => (
+              <button
+                type="button"
+                key={menuItem}
+                className={`customer-category-menu-item ${activeProductMenu === menuItem ? "active" : ""}`}
+                onClick={() => setActiveProductMenu(menuItem)}
+              >
+                {menuItem}
+              </button>
             ))}
-          </select>
-
-          <input
-            type="text"
-            value={searchKeyword}
-            onChange={(event) => setSearchKeyword(event.target.value)}
-            placeholder="Nhập từ khóa"
-          />
-
-          <button type="button">Tìm kiếm</button>
-        </div>
-      </section>
-
-      <section className="customer-products-section">
-        <div className="customer-products-header">
-          <div>
-            <p className="section-label">Sản phẩm nổi bật</p>
-            <h3>Danh sách sản phẩm dành cho khách hàng</h3>
           </div>
 
-          <button
-            type="button"
-            className="back-login-btn"
-            onClick={onBackToLogin}
-          >
-            Quay lại đăng nhập
-          </button>
+          <div className="customer-category-list">
+            <div className="customer-category-current">
+              <h3>{activeProductMenu}</h3>
+              <div className="customer-category-current-items">
+                {visibleProducts
+                  .filter((prod) =>
+                    activeProductMenu === "VỢT CẦU LÔNG"
+                      ? prod.category.toLowerCase().includes("vợt")
+                      : true,
+                  )
+                  .map((prod) => (
+                    <button
+                      key={prod.id}
+                      type="button"
+                      className={`customer-category-current-item ${selectedCategoryProduct?.id === prod.id ? "active" : ""}`}
+                      onClick={() => {
+                        setSelectedCategoryProduct(prod);
+                        openProductDetail(prod);
+                      }}
+                    >
+                      {prod.name}
+                    </button>
+                  ))}
+              </div>
+            </div>
+
+            {productBrandColumns.map((group) => (
+              <div key={group.title} className="customer-category-group">
+                <h3 className="customer-category-group-title">{group.title}</h3>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="customer-products-grid">
-          {filteredProducts.map((product) => (
-            <article
-              key={product.id}
-              className="customer-product-card"
-              onClick={() => openProductDetail(product)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  openProductDetail(product);
-                }
-              }}
-            >
-              <div className="customer-product-image">
-                <img src={product.image} alt={product.name} />
-                <span className="customer-product-category">
-                  {product.category}
-                </span>
-              </div>
-
-              <div className="customer-product-content">
-                <h2>{product.name}</h2>
-                <p className="customer-product-brand">
-                  {product.brand} • {product.sport}
+        {selectedCategoryProduct && (
+          <section className="customer-inline-product-detail">
+            <h3>Thông tin sản phẩm được chọn</h3>
+            <div className="customer-inline-product-card">
+              <img src={selectedCategoryProduct.image} alt={selectedCategoryProduct.name} />
+              <div>
+                <h4>{selectedCategoryProduct.name}</h4>
+                <p>{selectedCategoryProduct.description}</p>
+                <p>
+                  <strong>Giá: </strong> {formatPrice(selectedCategoryProduct.price)}{' '}
+                  {selectedCategoryProduct.originalPrice > selectedCategoryProduct.price && (
+                    <span className="original">{formatPrice(selectedCategoryProduct.originalPrice)}</span>
+                  )}
                 </p>
-
-                <div className="customer-product-price">
-                  <span className="current">{formatPrice(product.price)}</span>
-                  <span className="original">
-                    {formatPrice(product.originalPrice)}
-                  </span>
-                </div>
-
-                <div className="customer-product-meta">
-                  <span>⭐ {product.rating}</span>
-                  <span>{product.reviewCount} đánh giá</span>
-                  <span>Còn {product.stock}</span>
-                </div>
-
+                <p>
+                  <strong>Thương hiệu:</strong> {selectedCategoryProduct.brand}
+                </p>
+                <p>
+                  <strong>Kho:</strong> Còn {selectedCategoryProduct.stock}
+                </p>
                 <button
                   type="button"
                   className="customer-product-detail-btn"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    openProductDetail(product);
-                  }}
+                  onClick={() => setActiveProduct(selectedCategoryProduct)}
                 >
-                  Xem chi tiết
+                  Xem chi tiết đầy đủ
                 </button>
               </div>
-            </article>
-          ))}
-
-          {filteredProducts.length === 0 && (
-            <div className="customer-empty-state">
-              Không tìm thấy sản phẩm phù hợp với bộ lọc hiện tại.
             </div>
-          )}
-        </div>
+          </section>
+        )}
       </section>
+      )}
 
       {activeProduct && (
         <div className="customer-product-overlay" onClick={closeProductDetail}>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { CategoryProvider } from "../CategoryContext";
 import DashboardPage from "./DashboardPage";
 import UsersPage from "./UsersPage";
 import ProductsPage from "./ProductsPage";
@@ -8,6 +7,7 @@ import InventoryPage from "./InventoryPage";
 import OrdersPage from "./OrdersPage";
 import FinancePage from "./FinancePage";
 import ReportsPage from "./ReportsPage";
+import { CategoryProvider } from "../CategoryContext";
 import "../admincss/AdminDashboard.css";
 
 type MenuType =

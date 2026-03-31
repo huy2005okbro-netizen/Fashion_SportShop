@@ -7,10 +7,10 @@ import {
 } from "../shared/userAccounts";
 
 interface CustomerLoginProps {
-  onViewProductDetail?: () => void;
+  onLoginSuccess?: () => void;
 }
 
-function CustomerLogin({ onViewProductDetail }: CustomerLoginProps) {
+function CustomerLogin({ onLoginSuccess }: CustomerLoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
@@ -39,8 +39,8 @@ function CustomerLogin({ onViewProductDetail }: CustomerLoginProps) {
 
       upsertCustomerAccount(email, createCustomerNameFromEmail(email));
 
-      alert("Đăng nhập thành công! Đang chuyển đến danh mục sản phẩm...");
-      onViewProductDetail?.();
+      alert("Đăng nhập thành công!");
+      onLoginSuccess?.();
     } else {
       // Đăng ký thử nghiệm
       upsertCustomerAccount(email, createCustomerNameFromEmail(email));
@@ -130,11 +130,11 @@ function CustomerLogin({ onViewProductDetail }: CustomerLoginProps) {
           </button>
         </form>
 
-        {onViewProductDetail && (
+        {onLoginSuccess && (
           <button
             type="button"
             className="view-products-btn"
-            onClick={onViewProductDetail}
+            onClick={onLoginSuccess}
           >
             <svg
               width="20"

@@ -1,25 +1,25 @@
 import { useState } from "react";
 import AdminLogin from "./components/AdminLogin";
 import CustomerLogin from "./components/CustomerLogin";
-import CustomerProducts from "./pages/customer/CustomerProducts";
 import AdminDashboard from "./pages/admin/admintsx/AdminDashboard";
+import CustomerDashboard from "./pages/customer/customertsx/CustomerDashboard";
 import "./App.css";
 
 type UserType = "customer" | "admin";
-type CustomerPage = "login" | "products";
 
 function App() {
   const [userType, setUserType] = useState<UserType>("customer");
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
-  const [customerPage, setCustomerPage] = useState<CustomerPage>("login");
+  const [isCustomerLoggedIn, setIsCustomerLoggedIn] = useState(false);
 
   // Nếu admin đã đăng nhập, hiển thị admin dashboard
   if (isAdminLoggedIn) {
     return <AdminDashboard />;
   }
 
-  if (userType === "customer" && customerPage === "products") {
-    return <CustomerProducts onBackToLogin={() => setCustomerPage("login")} />;
+  // Nếu customer đã đăng nhập, hiển thị customer dashboard
+  if (isCustomerLoggedIn) {
+    return <CustomerDashboard />;
   }
 
   return (
@@ -40,9 +40,7 @@ function App() {
       </div>
 
       {userType === "customer" && (
-        <CustomerLogin
-          onViewProductDetail={() => setCustomerPage("products")}
-        />
+        <CustomerLogin onLoginSuccess={() => setIsCustomerLoggedIn(true)} />
       )}
       {userType === "admin" && (
         <AdminLogin onLoginSuccess={() => setIsAdminLoggedIn(true)} />

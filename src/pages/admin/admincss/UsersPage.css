@@ -9,13 +9,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   flex-shrink: 0;
+  padding: 16px 0;
 }
 
 .page-header h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: 18px;
   color: #1f2937;
   font-weight: 600;
 }
@@ -138,7 +139,7 @@
 }
 
 .page-content .data-table th {
-  padding: 12px 20px;
+  padding: 10px 20px;
   text-align: left;
   font-size: 12px;
   font-weight: 600;
@@ -150,11 +151,12 @@
 }
 
 .page-content .data-table td {
-  padding: 14px 20px;
+  padding: 8px 20px;
   font-size: 14px;
   color: #111827;
   border-bottom: 1px solid #f3f4f6;
   background: #ffffff;
+  line-height: 1.4;
 }
 
 .page-content .data-table tbody,
@@ -163,12 +165,20 @@
   background: #ffffff;
 }
 
+.page-content .data-table tbody tr {
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
 .page-content .data-table tbody tr:hover {
-  background: #ffffff;
+  background: #fff5f5;
+  cursor: pointer;
+  border-left: 3px solid #ff6b35;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .page-content .data-table tbody tr:hover td {
-  background: #ffffff;
+  background: #fff5f5;
 }
 
 .page-content .data-table tbody tr:last-child td {
