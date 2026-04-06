@@ -326,11 +326,22 @@
   background: #fff;
 }
 
+.section-container-full {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.section-container-full .section-title {
+  padding: 0 40px;
+  margin-bottom: 32px;
+}
+
 .sports-wrapper {
   position: relative;
   display: flex;
   align-items: center;
   gap: 16px;
+  padding: 0 20px;
 }
 
 .scroll-btn {

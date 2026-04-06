@@ -159,7 +159,7 @@ function HomePage() {
 
       {/* Sports Categories Section */}
       <section className="sports-section">
-        <div className="section-container">
+        <div className="section-container-full">
           <h2 className="section-title">MÔN THỂ THAO YÊU THÍCH</h2>
           <div className="sports-wrapper">
             <button
