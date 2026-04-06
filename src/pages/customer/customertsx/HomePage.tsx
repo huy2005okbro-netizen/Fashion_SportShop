@@ -1,7 +1,21 @@
 import { useState, useEffect } from "react";
 import "../customercss/HomePage.css";
 
-function HomePage() {
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  oldPrice: number;
+  image: string;
+  quantity: number;
+  category: string;
+}
+
+interface HomePageProps {
+  onAddToCart: (item: CartItem) => void;
+}
+
+function HomePage({ onAddToCart }: HomePageProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
@@ -585,22 +599,99 @@ function HomePage() {
         <div className="section-container">
           <h2 className="section-title">SẢN PHẨM BÁN CHẠY</h2>
           <div className="products-grid">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-              <div key={item} className="product-card">
+            {[
+              {
+                id: 1,
+                name: "Giày Nike Air Max 2024",
+                price: 2499000,
+                oldPrice: 3499000,
+                image: "👟",
+              },
+              {
+                id: 2,
+                name: "Giày Adidas Ultraboost",
+                price: 2799000,
+                oldPrice: 3999000,
+                image: "👟",
+              },
+              {
+                id: 3,
+                name: "Giày Puma RS-X",
+                price: 1899000,
+                oldPrice: 2699000,
+                image: "👟",
+              },
+              {
+                id: 4,
+                name: "Giày New Balance 574",
+                price: 2199000,
+                oldPrice: 3199000,
+                image: "👟",
+              },
+              {
+                id: 5,
+                name: "Giày HOKA Clifton 9",
+                price: 3299000,
+                oldPrice: 4299000,
+                image: "👟",
+              },
+              {
+                id: 6,
+                name: "Giày On Running Cloud",
+                price: 3499000,
+                oldPrice: 4499000,
+                image: "👟",
+              },
+              {
+                id: 7,
+                name: "Giày Asics Gel-Kayano",
+                price: 2999000,
+                oldPrice: 3999000,
+                image: "👟",
+              },
+              {
+                id: 8,
+                name: "Giày Brooks Ghost 15",
+                price: 2899000,
+                oldPrice: 3899000,
+                image: "👟",
+              },
+            ].map((product) => (
+              <div key={product.id} className="product-card">
                 <div className="product-badge">-30%</div>
                 <div className="product-image">
-                  <div className="image-placeholder">👟</div>
+                  <div className="image-placeholder">{product.image}</div>
                 </div>
                 <div className="product-info">
-                  <h4>Giày Nike Air Max {item}</h4>
+                  <h4>{product.name}</h4>
                   <div className="product-rating">
                     <span className="stars">⭐⭐⭐⭐⭐</span>
                     <span className="reviews">(128)</span>
                   </div>
                   <div className="product-price">
-                    <span className="price-current">2,499,000đ</span>
-                    <span className="price-old">3,499,000đ</span>
+                    <span className="price-current">
+                      {product.price.toLocaleString("vi-VN")}đ
+                    </span>
+                    <span className="price-old">
+                      {product.oldPrice.toLocaleString("vi-VN")}đ
+                    </span>
                   </div>
+                  <button
+                    className="btn-add-to-cart"
+                    onClick={() =>
+                      onAddToCart({
+                        id: `product-${product.id}`,
+                        name: product.name,
+                        price: product.price,
+                        oldPrice: product.oldPrice,
+                        image: product.image,
+                        quantity: 1,
+                        category: "Sản phẩm bán chạy",
+                      })
+                    }
+                  >
+                    🛒 Thêm vào giỏ
+                  </button>
                 </div>
               </div>
             ))}

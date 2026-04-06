@@ -1569,7 +1569,7 @@ function CustomerDashboard() {
       </header>
 
       <main className="customer-content">
-        {activeMenu === "home" && <HomePage />}
+        {activeMenu === "home" && <HomePage onAddToCart={handleAddToCart} />}
 
         {activeMenu === "category" && (
           <div className="category-page">

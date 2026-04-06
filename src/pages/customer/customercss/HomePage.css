@@ -614,6 +614,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-bottom: 12px;
 }
 
 .price-current {
@@ -626,6 +627,33 @@
   font-size: 16px;
   color: #999;
   text-decoration: line-through;
+}
+
+.btn-add-to-cart {
+  width: 100%;
+  padding: 12px;
+  background: #00ff00;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-add-to-cart:hover {
+  background: #00cc00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 255, 0, 0.3);
+}
+
+.btn-add-to-cart:active {
+  transform: translateY(0);
 }
 
 @media (max-width: 1200px) {
