@@ -160,202 +160,227 @@ function HomePage() {
       {/* Sports Categories Section */}
       <section className="sports-section">
         <div className="section-container">
-          <div className="section-header">
-            <h2 className="section-title">MÔN THỂ THAO YÊU THÍCH</h2>
-            <div className="scroll-buttons">
-              <button
-                className="scroll-btn scroll-left"
-                onClick={() => {
-                  const container = document.querySelector(
-                    ".sports-scroll-container",
-                  );
-                  if (container) {
-                    container.scrollBy({ left: -400, behavior: "smooth" });
-                  }
-                }}
-              >
-                ‹
-              </button>
-              <button
-                className="scroll-btn scroll-right"
-                onClick={() => {
-                  const container = document.querySelector(
-                    ".sports-scroll-container",
-                  );
-                  if (container) {
-                    container.scrollBy({ left: 400, behavior: "smooth" });
-                  }
-                }}
-              >
-                ›
-              </button>
+          <h2 className="section-title">MÔN THỂ THAO YÊU THÍCH</h2>
+          <div className="sports-wrapper">
+            <button
+              className="scroll-btn scroll-left"
+              onClick={() => {
+                const container = document.querySelector(
+                  ".sports-scroll-container",
+                );
+                if (container) {
+                  container.scrollBy({ left: -400, behavior: "smooth" });
+                }
+              }}
+            >
+              ‹
+            </button>
+            <div className="sports-scroll-container">
+              <div className="sports-grid">
+                <div className="sport-card">
+                  <img
+                    src="/images/sport-running.jpg"
+                    alt="Chạy bộ"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "flex";
+                    }}
+                  />
+                  <div
+                    className="sport-placeholder"
+                    style={{ display: "none" }}
+                  >
+                    🏃
+                  </div>
+                  <div className="sport-overlay">
+                    <h3>CHẠY BỘ</h3>
+                  </div>
+                </div>
+                <div className="sport-card">
+                  <img
+                    src="/images/sport-fashion.jpg"
+                    alt="Thời trang thể thao"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "flex";
+                    }}
+                  />
+                  <div
+                    className="sport-placeholder"
+                    style={{ display: "none" }}
+                  >
+                    👕
+                  </div>
+                  <div className="sport-overlay">
+                    <h3>THỜI TRANG THỂ THAO</h3>
+                  </div>
+                </div>
+                <div className="sport-card">
+                  <img
+                    src="/images/sport-training.jpg"
+                    alt="Luyện tập"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "flex";
+                    }}
+                  />
+                  <div
+                    className="sport-placeholder"
+                    style={{ display: "none" }}
+                  >
+                    💪
+                  </div>
+                  <div className="sport-overlay">
+                    <h3>LUYỆN TẬP</h3>
+                  </div>
+                </div>
+                <div className="sport-card">
+                  <img
+                    src="/images/sport-outdoor.jpg"
+                    alt="Thể thao ngoài trời"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "flex";
+                    }}
+                  />
+                  <div
+                    className="sport-placeholder"
+                    style={{ display: "none" }}
+                  >
+                    🏕️
+                  </div>
+                  <div className="sport-overlay">
+                    <h3>THỂ THAO NGOÀI TRỜI</h3>
+                  </div>
+                </div>
+                <div className="sport-card">
+                  <img
+                    src="/images/sport-soccer.jpg"
+                    alt="Bóng đá"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "flex";
+                    }}
+                  />
+                  <div
+                    className="sport-placeholder"
+                    style={{ display: "none" }}
+                  >
+                    ⚽
+                  </div>
+                  <div className="sport-overlay">
+                    <h3>BÓNG ĐÁ</h3>
+                  </div>
+                </div>
+                <div className="sport-card">
+                  <img
+                    src="/images/sport-swimming.jpg"
+                    alt="Bơi lội"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "flex";
+                    }}
+                  />
+                  <div
+                    className="sport-placeholder"
+                    style={{ display: "none" }}
+                  >
+                    🏊
+                  </div>
+                  <div className="sport-overlay">
+                    <h3>BƠI LỘI</h3>
+                  </div>
+                </div>
+                <div className="sport-card">
+                  <img
+                    src="/images/sport-basketball.jpg"
+                    alt="Bóng rổ"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "flex";
+                    }}
+                  />
+                  <div
+                    className="sport-placeholder"
+                    style={{ display: "none" }}
+                  >
+                    🏀
+                  </div>
+                  <div className="sport-overlay">
+                    <h3>BÓNG RỔ</h3>
+                  </div>
+                </div>
+                <div className="sport-card">
+                  <img
+                    src="/images/sport-tennis.jpg"
+                    alt="Tennis"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "flex";
+                    }}
+                  />
+                  <div
+                    className="sport-placeholder"
+                    style={{ display: "none" }}
+                  >
+                    🎾
+                  </div>
+                  <div className="sport-overlay">
+                    <h3>TENNIS</h3>
+                  </div>
+                </div>
+                <div className="sport-card">
+                  <img
+                    src="/images/sport-golf.jpg"
+                    alt="Golf"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "flex";
+                    }}
+                  />
+                  <div
+                    className="sport-placeholder"
+                    style={{ display: "none" }}
+                  >
+                    ⛳
+                  </div>
+                  <div className="sport-overlay">
+                    <h3>GOLF</h3>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="sports-scroll-container">
-            <div className="sports-grid">
-              <div className="sport-card">
-                <img
-                  src="/images/sport-running.jpg"
-                  alt="Chạy bộ"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="sport-placeholder" style={{ display: "none" }}>
-                  🏃
-                </div>
-                <div className="sport-overlay">
-                  <h3>CHẠY BỘ</h3>
-                </div>
-              </div>
-              <div className="sport-card">
-                <img
-                  src="/images/sport-fashion.jpg"
-                  alt="Thời trang thể thao"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="sport-placeholder" style={{ display: "none" }}>
-                  👕
-                </div>
-                <div className="sport-overlay">
-                  <h3>THỜI TRANG THỂ THAO</h3>
-                </div>
-              </div>
-              <div className="sport-card">
-                <img
-                  src="/images/sport-training.jpg"
-                  alt="Luyện tập"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="sport-placeholder" style={{ display: "none" }}>
-                  💪
-                </div>
-                <div className="sport-overlay">
-                  <h3>LUYỆN TẬP</h3>
-                </div>
-              </div>
-              <div className="sport-card">
-                <img
-                  src="/images/sport-outdoor.jpg"
-                  alt="Thể thao ngoài trời"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="sport-placeholder" style={{ display: "none" }}>
-                  🏕️
-                </div>
-                <div className="sport-overlay">
-                  <h3>THỂ THAO NGOÀI TRỜI</h3>
-                </div>
-              </div>
-              <div className="sport-card">
-                <img
-                  src="/images/sport-soccer.jpg"
-                  alt="Bóng đá"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="sport-placeholder" style={{ display: "none" }}>
-                  ⚽
-                </div>
-                <div className="sport-overlay">
-                  <h3>BÓNG ĐÁ</h3>
-                </div>
-              </div>
-              <div className="sport-card">
-                <img
-                  src="/images/sport-swimming.jpg"
-                  alt="Bơi lội"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="sport-placeholder" style={{ display: "none" }}>
-                  🏊
-                </div>
-                <div className="sport-overlay">
-                  <h3>BƠI LỘI</h3>
-                </div>
-              </div>
-              <div className="sport-card">
-                <img
-                  src="/images/sport-basketball.jpg"
-                  alt="Bóng rổ"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="sport-placeholder" style={{ display: "none" }}>
-                  🏀
-                </div>
-                <div className="sport-overlay">
-                  <h3>BÓNG RỔ</h3>
-                </div>
-              </div>
-              <div className="sport-card">
-                <img
-                  src="/images/sport-tennis.jpg"
-                  alt="Tennis"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="sport-placeholder" style={{ display: "none" }}>
-                  🎾
-                </div>
-                <div className="sport-overlay">
-                  <h3>TENNIS</h3>
-                </div>
-              </div>
-              <div className="sport-card">
-                <img
-                  src="/images/sport-golf.jpg"
-                  alt="Golf"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="sport-placeholder" style={{ display: "none" }}>
-                  ⛳
-                </div>
-                <div className="sport-overlay">
-                  <h3>GOLF</h3>
-                </div>
-              </div>
-            </div>
+            <button
+              className="scroll-btn scroll-right"
+              onClick={() => {
+                const container = document.querySelector(
+                  ".sports-scroll-container",
+                );
+                if (container) {
+                  container.scrollBy({ left: 400, behavior: "smooth" });
+                }
+              }}
+            >
+              ›
+            </button>
           </div>
         </div>
       </section>
