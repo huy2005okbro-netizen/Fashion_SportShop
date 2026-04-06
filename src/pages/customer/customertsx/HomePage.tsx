@@ -42,117 +42,207 @@ function HomePage() {
 
       {/* Categories Section */}
       <section className="categories-section">
-        <div className="section-container">
+        <div className="section-container-full">
           <h2 className="section-title">DANH MỤC SẢN PHẨM</h2>
-          <div className="categories-grid">
-            <div className="category-card">
-              <div className="category-image">
-                <img
-                  src="/images/category-shoes.jpg"
-                  alt="Giày thể thao"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="image-placeholder" style={{ display: "none" }}>
-                  👟
+          <div className="categories-wrapper">
+            <button
+              className="scroll-btn scroll-left"
+              onClick={() => {
+                const container = document.querySelector(
+                  ".categories-scroll-container",
+                );
+                if (container) {
+                  container.scrollBy({ left: -400, behavior: "smooth" });
+                }
+              }}
+            >
+              ‹
+            </button>
+            <div className="categories-scroll-container">
+              <div className="categories-grid">
+                <div className="category-card">
+                  <div className="category-image">
+                    <img
+                      src="/images/category-shoes.jpg"
+                      alt="Giày thể thao"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        const placeholder = e.currentTarget
+                          .nextElementSibling as HTMLElement;
+                        if (placeholder) placeholder.style.display = "flex";
+                      }}
+                    />
+                    <div
+                      className="image-placeholder"
+                      style={{ display: "none" }}
+                    >
+                      👟
+                    </div>
+                  </div>
+                  <h3>Giày thể thao</h3>
+                </div>
+                <div className="category-card">
+                  <div className="category-image">
+                    <img
+                      src="/images/category-shirts.jpg"
+                      alt="Áo thể thao"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        const placeholder = e.currentTarget
+                          .nextElementSibling as HTMLElement;
+                        if (placeholder) placeholder.style.display = "flex";
+                      }}
+                    />
+                    <div
+                      className="image-placeholder"
+                      style={{ display: "none" }}
+                    >
+                      👕
+                    </div>
+                  </div>
+                  <h3>Áo thể thao</h3>
+                </div>
+                <div className="category-card">
+                  <div className="category-image">
+                    <img
+                      src="/images/category-pants.jpg"
+                      alt="Quần thể thao"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        const placeholder = e.currentTarget
+                          .nextElementSibling as HTMLElement;
+                        if (placeholder) placeholder.style.display = "flex";
+                      }}
+                    />
+                    <div
+                      className="image-placeholder"
+                      style={{ display: "none" }}
+                    >
+                      👖
+                    </div>
+                  </div>
+                  <h3>Quần thể thao</h3>
+                </div>
+                <div className="category-card">
+                  <div className="category-image">
+                    <img
+                      src="/images/category-accessories.jpg"
+                      alt="Phụ kiện"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        const placeholder = e.currentTarget
+                          .nextElementSibling as HTMLElement;
+                        if (placeholder) placeholder.style.display = "flex";
+                      }}
+                    />
+                    <div
+                      className="image-placeholder"
+                      style={{ display: "none" }}
+                    >
+                      🎒
+                    </div>
+                  </div>
+                  <h3>Phụ kiện</h3>
+                </div>
+                <div className="category-card">
+                  <div className="category-image">
+                    <img
+                      src="/images/category-hats.jpg"
+                      alt="Mũ & Nón"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        const placeholder = e.currentTarget
+                          .nextElementSibling as HTMLElement;
+                        if (placeholder) placeholder.style.display = "flex";
+                      }}
+                    />
+                    <div
+                      className="image-placeholder"
+                      style={{ display: "none" }}
+                    >
+                      🧢
+                    </div>
+                  </div>
+                  <h3>Mũ & Nón</h3>
+                </div>
+                <div className="category-card">
+                  <div className="category-image">
+                    <img
+                      src="/images/category-gloves.jpg"
+                      alt="Găng tay"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        const placeholder = e.currentTarget
+                          .nextElementSibling as HTMLElement;
+                        if (placeholder) placeholder.style.display = "flex";
+                      }}
+                    />
+                    <div
+                      className="image-placeholder"
+                      style={{ display: "none" }}
+                    >
+                      🧤
+                    </div>
+                  </div>
+                  <h3>Găng tay</h3>
+                </div>
+                <div className="category-card">
+                  <div className="category-image">
+                    <img
+                      src="/images/category-socks.jpg"
+                      alt="Tất / Vớ"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        const placeholder = e.currentTarget
+                          .nextElementSibling as HTMLElement;
+                        if (placeholder) placeholder.style.display = "flex";
+                      }}
+                    />
+                    <div
+                      className="image-placeholder"
+                      style={{ display: "none" }}
+                    >
+                      🧦
+                    </div>
+                  </div>
+                  <h3>Tất / Vớ</h3>
+                </div>
+                <div className="category-card">
+                  <div className="category-image">
+                    <img
+                      src="/images/category-bags.jpg"
+                      alt="Balo / Túi"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        const placeholder = e.currentTarget
+                          .nextElementSibling as HTMLElement;
+                        if (placeholder) placeholder.style.display = "flex";
+                      }}
+                    />
+                    <div
+                      className="image-placeholder"
+                      style={{ display: "none" }}
+                    >
+                      🎒
+                    </div>
+                  </div>
+                  <h3>Balo / Túi</h3>
                 </div>
               </div>
-              <h3>Giày thể thao</h3>
             </div>
-            <div className="category-card">
-              <div className="category-image">
-                <img
-                  src="/images/category-shirts.jpg"
-                  alt="Áo thể thao"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="image-placeholder" style={{ display: "none" }}>
-                  👕
-                </div>
-              </div>
-              <h3>Áo thể thao</h3>
-            </div>
-            <div className="category-card">
-              <div className="category-image">
-                <img
-                  src="/images/category-pants.jpg"
-                  alt="Quần thể thao"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="image-placeholder" style={{ display: "none" }}>
-                  👖
-                </div>
-              </div>
-              <h3>Quần thể thao</h3>
-            </div>
-            <div className="category-card">
-              <div className="category-image">
-                <img
-                  src="/images/category-accessories.jpg"
-                  alt="Phụ kiện"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="image-placeholder" style={{ display: "none" }}>
-                  🎒
-                </div>
-              </div>
-              <h3>Phụ kiện</h3>
-            </div>
-            <div className="category-card">
-              <div className="category-image">
-                <img
-                  src="/images/category-hats.jpg"
-                  alt="Mũ & Nón"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="image-placeholder" style={{ display: "none" }}>
-                  🧢
-                </div>
-              </div>
-              <h3>Mũ & Nón</h3>
-            </div>
-            <div className="category-card">
-              <div className="category-image">
-                <img
-                  src="/images/category-gloves.jpg"
-                  alt="Găng tay"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                    const placeholder = e.currentTarget
-                      .nextElementSibling as HTMLElement;
-                    if (placeholder) placeholder.style.display = "flex";
-                  }}
-                />
-                <div className="image-placeholder" style={{ display: "none" }}>
-                  🧤
-                </div>
-              </div>
-              <h3>Găng tay</h3>
-            </div>
+            <button
+              className="scroll-btn scroll-right"
+              onClick={() => {
+                const container = document.querySelector(
+                  ".categories-scroll-container",
+                );
+                if (container) {
+                  container.scrollBy({ left: 400, behavior: "smooth" });
+                }
+              }}
+            >
+              ›
+            </button>
           </div>
         </div>
       </section>

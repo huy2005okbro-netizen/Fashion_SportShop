@@ -249,7 +249,7 @@
 }
 
 .section-container {
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -263,10 +263,31 @@
   letter-spacing: 1px;
 }
 
+.categories-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px;
+}
+
+.categories-scroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 8px;
+  flex: 1;
+}
+
+.categories-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
 .categories-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  display: flex;
   gap: 24px;
+  width: max-content;
 }
 
 .category-card {
@@ -277,6 +298,8 @@
   cursor: pointer;
   transition: all 0.3s;
   border: 5px solid transparent;
+  width: 250px;
+  flex-shrink: 0;
 }
 
 .category-card:hover {
@@ -396,8 +419,8 @@
 
 .sport-card {
   position: relative;
-  width: 400px;
-  height: 500px;
+  width: 500px;
+  height: 750px;
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
@@ -606,9 +629,13 @@
 }
 
 @media (max-width: 1200px) {
-  .categories-grid,
   .brands-grid {
     grid-template-columns: repeat(4, 1fr);
+  }
+
+  .category-card {
+    width: 220px;
+    padding: 40px;
   }
 
   .sport-card {
@@ -626,9 +653,17 @@
     font-size: 48px;
   }
 
-  .categories-grid,
   .brands-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .category-card {
+    width: 180px;
+    padding: 30px;
+  }
+
+  .category-image {
+    height: 150px;
   }
 
   .sport-card {
