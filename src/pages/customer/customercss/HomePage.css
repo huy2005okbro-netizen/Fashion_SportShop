@@ -326,19 +326,68 @@
   background: #fff;
 }
 
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.scroll-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.scroll-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #e0e0e0;
+  background: #fff;
+  color: #333;
+  font-size: 28px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 300;
+}
+
+.scroll-btn:hover {
+  background: #00ff00;
+  border-color: #00ff00;
+  color: #000;
+  transform: scale(1.1);
+}
+
+.sports-scroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 8px;
+}
+
+.sports-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
 .sports-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  display: flex;
   gap: 16px;
+  width: max-content;
 }
 
 .sport-card {
   position: relative;
-  height: 400px;
+  width: 400px;
+  height: 500px;
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s;
+  flex-shrink: 0;
 }
 
 .sport-card img {
@@ -543,9 +592,13 @@
 
 @media (max-width: 1200px) {
   .categories-grid,
-  .sports-grid,
   .brands-grid {
     grid-template-columns: repeat(4, 1fr);
+  }
+
+  .sport-card {
+    width: 280px;
+    height: 350px;
   }
 
   .products-grid {
@@ -559,9 +612,23 @@
   }
 
   .categories-grid,
-  .sports-grid,
   .brands-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sport-card {
+    width: 240px;
+    height: 300px;
+  }
+
+  .scroll-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+
+  .section-header {
+    margin-bottom: 24px;
   }
 
   .products-grid {
