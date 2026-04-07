@@ -1,5 +1,8 @@
 import { useState } from "react";
 import HomePage from "./HomePage";
+import ProductDetailPage from "./ProductDetailPage";
+import CheckoutPage from "./CheckoutPage";
+import OrdersPage from "./OrdersPage";
 import "../customercss/CustomerDashboard.css";
 
 interface CartItem {
@@ -24,6 +27,9 @@ function CustomerDashboard() {
   const [showDealsDropdown, setShowDealsDropdown] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [showProductDetail, setShowProductDetail] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<CartItem | null>(null);
+  const [checkoutItems, setCheckoutItems] = useState<CartItem[]>([]);
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
@@ -41,6 +47,47 @@ function CustomerDashboard() {
   const handleLogoClick = () => {
     setActiveMenu("home");
     setSelectedCategory("");
+    setShowProductDetail(false);
+    setSelectedProduct(null);
+  };
+
+  const handleProductClick = (product: CartItem) => {
+    setSelectedProduct(product);
+    setShowProductDetail(true);
+    setActiveMenu("product-detail");
+  };
+
+  const handleBackFromProductDetail = () => {
+    setShowProductDetail(false);
+    setSelectedProduct(null);
+    setActiveMenu("home");
+  };
+
+  const handleBuyNow = (items: CartItem[]) => {
+    setCheckoutItems(items);
+    setActiveMenu("checkout");
+  };
+
+  const handleBackFromCheckout = () => {
+    setActiveMenu("cart");
+  };
+
+  const handleOrderComplete = () => {
+    // Clear checkout items and cart
+    setCheckoutItems([]);
+    setCartItems([]);
+    setActiveMenu("home");
+    alert(
+      "Đặt hàng thành công! Bạn có thể xem đơn hàng trong mục 'Đơn hàng của tôi'",
+    );
+  };
+
+  const handleViewOrders = () => {
+    setActiveMenu("orders");
+  };
+
+  const handleBackFromOrders = () => {
+    setActiveMenu("home");
   };
 
   const handleAddToCart = (item: CartItem) => {
@@ -1534,6 +1581,13 @@ function CustomerDashboard() {
                 <input type="text" placeholder="Bạn đang tìm gì..." />
                 <button className="search-btn">🔍</button>
               </div>
+              <button
+                className="icon-btn"
+                onClick={handleViewOrders}
+                title="Đơn hàng của tôi"
+              >
+                📋
+              </button>
               <button className="icon-btn">👤</button>
               <button
                 className="icon-btn cart-btn"
@@ -1569,7 +1623,33 @@ function CustomerDashboard() {
       </header>
 
       <main className="customer-content">
-        {activeMenu === "home" && <HomePage onAddToCart={handleAddToCart} />}
+        {activeMenu === "home" && (
+          <HomePage
+            onAddToCart={handleAddToCart}
+            onProductClick={handleProductClick}
+          />
+        )}
+
+        {activeMenu === "product-detail" && selectedProduct && (
+          <ProductDetailPage
+            onBack={handleBackFromProductDetail}
+            onAddToCart={handleAddToCart}
+            onBuyNow={handleBuyNow}
+            product={selectedProduct}
+          />
+        )}
+
+        {activeMenu === "checkout" && (
+          <CheckoutPage
+            items={checkoutItems}
+            onBack={handleBackFromCheckout}
+            onOrderComplete={handleOrderComplete}
+          />
+        )}
+
+        {activeMenu === "orders" && (
+          <OrdersPage onBack={handleBackFromOrders} />
+        )}
 
         {activeMenu === "category" && (
           <div className="category-page">
@@ -1577,10 +1657,41 @@ function CustomerDashboard() {
               <h1 className="category-title">{selectedCategory}</h1>
               <div className="products-grid">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((item) => (
-                  <div key={item} className="product-card">
+                  <div
+                    key={item}
+                    className="product-card"
+                    onClick={() =>
+                      handleProductClick({
+                        id: `${selectedCategory}-${item}`,
+                        name: `${selectedCategory} - Sản phẩm ${item}`,
+                        price: 2499000,
+                        oldPrice: 3499000,
+                        image:
+                          "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80",
+                        quantity: 1,
+                        category: selectedCategory,
+                      })
+                    }
+                    style={{ cursor: "pointer" }}
+                  >
                     <div className="product-badge">-30%</div>
                     <div className="product-image">
-                      <div className="image-placeholder">👟</div>
+                      <img
+                        src={`/images/products/product-${item}.jpg`}
+                        alt={`${selectedCategory} - Sản phẩm ${item}`}
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          const placeholder = e.currentTarget
+                            .nextElementSibling as HTMLElement;
+                          if (placeholder) placeholder.style.display = "flex";
+                        }}
+                      />
+                      <div
+                        className="image-placeholder"
+                        style={{ display: "none" }}
+                      >
+                        👟
+                      </div>
                     </div>
                     <div className="product-info">
                       <h4>
@@ -1596,7 +1707,8 @@ function CustomerDashboard() {
                       </div>
                       <button
                         className="btn-add-cart"
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           handleAddToCart({
                             id: `${selectedCategory}-${item}`,
                             name: `${selectedCategory} - Sản phẩm ${item}`,
@@ -1605,8 +1717,8 @@ function CustomerDashboard() {
                             image: "👟",
                             quantity: 1,
                             category: selectedCategory,
-                          })
-                        }
+                          });
+                        }}
                       >
                         Thêm vào giỏ
                       </button>

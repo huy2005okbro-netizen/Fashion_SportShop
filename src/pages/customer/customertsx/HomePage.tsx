@@ -13,9 +13,32 @@ interface CartItem {
 
 interface HomePageProps {
   onAddToCart: (item: CartItem) => void;
+  onProductClick: (product: CartItem) => void;
 }
 
-function HomePage({ onAddToCart }: HomePageProps) {
+const arrivalImageUrls: Record<number, string> = {
+  1: "https://images.unsplash.com/photo-1506629905607-d9c297d3d1f2?auto=format&fit=crop&w=900&q=80",
+  2: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80",
+  3: "https://images.unsplash.com/photo-1543508282-6319a3e2621f?auto=format&fit=crop&w=900&q=80",
+  4: "https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=900&q=80",
+  5: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80",
+  6: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80",
+  7: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=80",
+  8: "https://images.unsplash.com/photo-1506629905607-d9c297d3d1f2?auto=format&fit=crop&w=900&q=80",
+};
+
+const bestsellerImageUrls: Record<number, string> = {
+  1: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80",
+  2: "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=900&q=80",
+  3: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=900&q=80",
+  4: "https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=900&q=80",
+  5: "https://images.unsplash.com/photo-1556906781-9a412961c28c?auto=format&fit=crop&w=900&q=80",
+  6: "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?auto=format&fit=crop&w=900&q=80",
+  7: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=900&q=80",
+  8: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=900&q=80",
+};
+
+function HomePage({ onAddToCart, onProductClick }: HomePageProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
@@ -489,6 +512,327 @@ function HomePage({ onAddToCart }: HomePageProps) {
         </div>
       </section>
 
+      {/* News Section */}
+      <section className="news-section">
+        <div className="section-container">
+          <h2 className="section-title">TIN TỨC THỜI TRANG & THỂ THAO</h2>
+          <div className="news-tabs">
+            <button className="news-tab active">Tin nổi bật</button>
+            <button className="news-tab">Tin thương hiệu</button>
+            <button className="news-tab">Mạng lưới cửa hàng</button>
+          </div>
+          <div className="news-grid">
+            <div className="news-card">
+              <div className="news-image">
+                <img
+                  src="/images/news-1.jpg"
+                  alt="News 1"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                    const placeholder = e.currentTarget
+                      .nextElementSibling as HTMLElement;
+                    if (placeholder) placeholder.style.display = "flex";
+                  }}
+                />
+                <div className="news-placeholder" style={{ display: "none" }}>
+                  📰
+                </div>
+              </div>
+              <div className="news-content">
+                <h3>
+                  Supersports x JOOLA: Gặp Gỡ Và Ký Tặng Cùng Bọn Johns Tại
+                  Lotte Malt Tây Hồ
+                </h3>
+                <p className="news-excerpt">
+                  Sự kiện đặc biệt với sự tham gia của các vận động viên hàng
+                  đầu...
+                </p>
+                <a href="#" className="news-link">
+                  Xem thêm →
+                </a>
+              </div>
+            </div>
+            <div className="news-card">
+              <div className="news-image">
+                <img
+                  src="/images/news-2.jpg"
+                  alt="News 2"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                    const placeholder = e.currentTarget
+                      .nextElementSibling as HTMLElement;
+                    if (placeholder) placeholder.style.display = "flex";
+                  }}
+                />
+                <div className="news-placeholder" style={{ display: "none" }}>
+                  📰
+                </div>
+              </div>
+              <div className="news-content">
+                <h3>
+                  Nike Air Max Day 2024 Tại Supersports Crescent Mall - Sự Kiện
+                  Toàn Cầu Thể Bỏ Lỡ
+                </h3>
+                <p className="news-excerpt">
+                  Tham gia sự kiện Nike Air Max Day với nhiều ưu đãi hấp dẫn...
+                </p>
+                <a href="#" className="news-link">
+                  Xem thêm →
+                </a>
+              </div>
+            </div>
+            <div className="news-card">
+              <div className="news-image">
+                <img
+                  src="/images/news-3.jpg"
+                  alt="News 3"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                    const placeholder = e.currentTarget
+                      .nextElementSibling as HTMLElement;
+                    if (placeholder) placeholder.style.display = "flex";
+                  }}
+                />
+                <div className="news-placeholder" style={{ display: "none" }}>
+                  📰
+                </div>
+              </div>
+              <div className="news-content">
+                <h3>
+                  Nhận Ngay 1 Vợt Joola Pro V Khi Đăng Ký Mua Thường Hiệu Joola
+                  Tại Supersports!
+                </h3>
+                <p className="news-excerpt">
+                  Chương trình khuyến mãi đặc biệt dành cho người yêu thể
+                  thao...
+                </p>
+                <a href="#" className="news-link">
+                  Xem thêm →
+                </a>
+              </div>
+            </div>
+            <div className="news-card">
+              <div className="news-image">
+                <img
+                  src="/images/news-4.jpg"
+                  alt="News 4"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                    const placeholder = e.currentTarget
+                      .nextElementSibling as HTMLElement;
+                    if (placeholder) placeholder.style.display = "flex";
+                  }}
+                />
+                <div className="news-placeholder" style={{ display: "none" }}>
+                  📰
+                </div>
+              </div>
+              <div className="news-content">
+                <h3>
+                  HYROX Là Gì? Hướng Dẫn Tham Gia Tập HYROX Cho Người Mới Bắt
+                  Đầu
+                </h3>
+                <p className="news-excerpt">
+                  Khám phá xu hướng thể thao mới đang gây sốt toàn cầu...
+                </p>
+                <a href="#" className="news-link">
+                  Xem thêm →
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="news-view-all">
+            <button className="btn-view-all">Xem tất cả</button>
+          </div>
+        </div>
+      </section>
+
+      {/* New Arrivals Section */}
+      <section className="new-arrivals-section">
+        <div className="section-container-full">
+          <div className="section-header-with-link">
+            <h2 className="section-title">HÀNG MỚI VỀ</h2>
+            <a href="#" className="view-all-link">
+              XEM TẤT CẢ
+            </a>
+          </div>
+          <div className="arrivals-wrapper">
+            <button
+              className="scroll-btn scroll-left"
+              onClick={() => {
+                const container = document.querySelector(
+                  ".arrivals-scroll-container",
+                );
+                if (container) {
+                  container.scrollBy({ left: -400, behavior: "smooth" });
+                }
+              }}
+            >
+              ‹
+            </button>
+            <div className="arrivals-scroll-container">
+              <div className="arrivals-grid">
+                {[
+                  {
+                    id: 1,
+                    name: "Quần Dài Thể Thao Nam Columbia Scotch Spring™ - Xám",
+                    brand: "COLUMBIA",
+                    price: 1999000,
+                    image: "👖",
+                    badge: "-20%",
+                    colors: 3,
+                  },
+                  {
+                    id: 2,
+                    name: "Giày Chạy Trail Nữ Columbia Konos™ Trx Outdry™ - Xanh Dương",
+                    brand: "COLUMBIA",
+                    price: 3399000,
+                    image: "👟",
+                    badge: "-15%",
+                    colors: 4,
+                  },
+                  {
+                    id: 3,
+                    name: "Giày Chạy Trail Nam Columbia Konos™ Trx Outdry™ - Xám",
+                    brand: "COLUMBIA",
+                    price: 3399000,
+                    image: "👟",
+                    badge: "-15%",
+                    colors: 2,
+                  },
+                  {
+                    id: 4,
+                    name: "Áo Khoác Nam Columbia Trailborne™ 2.5L Shell - Cam",
+                    brand: "COLUMBIA",
+                    price: 3899000,
+                    image: "🧥",
+                    badge: "-25%",
+                    colors: 3,
+                  },
+                  {
+                    id: 5,
+                    name: "Áo Khoác Nữ Columbia Trailborne™ 2.5L Shell - Xanh Dương",
+                    brand: "COLUMBIA",
+                    price: 3899000,
+                    image: "🧥",
+                    badge: "-25%",
+                    colors: 2,
+                  },
+                  {
+                    id: 6,
+                    name: "Giày Nike Air Max 2024 - Đen",
+                    brand: "NIKE",
+                    price: 2999000,
+                    image: "👟",
+                    badge: "NEW",
+                    colors: 5,
+                  },
+                  {
+                    id: 7,
+                    name: "Áo Thun Thể Thao Nam Adidas - Trắng",
+                    brand: "ADIDAS",
+                    price: 899000,
+                    image: "👕",
+                    badge: "-30%",
+                    colors: 4,
+                  },
+                  {
+                    id: 8,
+                    name: "Quần Short Chạy Bộ Nữ Puma - Đen",
+                    brand: "PUMA",
+                    price: 799000,
+                    image: "🩳",
+                    badge: "-20%",
+                    colors: 3,
+                  },
+                ].map((product) => (
+                  <div
+                    key={product.id}
+                    className="arrival-card"
+                    onClick={() =>
+                      onProductClick({
+                        id: `arrival-${product.id}`,
+                        name: product.name,
+                        price: product.price,
+                        oldPrice: Math.round(product.price * 1.3),
+                        image: arrivalImageUrls[product.id] ?? product.image,
+                        quantity: 1,
+                        category: "Hàng mới về",
+                      })
+                    }
+                    style={{ cursor: "pointer" }}
+                  >
+                    <div className="arrival-badge">{product.badge}</div>
+                    <div className="arrival-image">
+                      <img
+                        src={arrivalImageUrls[product.id]}
+                        alt={product.name}
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          const placeholder = e.currentTarget
+                            .nextElementSibling as HTMLElement;
+                          if (placeholder) placeholder.style.display = "flex";
+                        }}
+                      />
+                      <div
+                        className="arrival-placeholder"
+                        style={{ display: "none" }}
+                      >
+                        {product.image}
+                      </div>
+                    </div>
+                    <div className="arrival-info">
+                      <p className="arrival-brand">{product.brand}</p>
+                      <h4>{product.name}</h4>
+                      <div className="arrival-colors">
+                        {Array.from({ length: product.colors }).map((_, i) => (
+                          <span key={i} className="color-dot"></span>
+                        ))}
+                        <span className="color-count">+{product.colors}</span>
+                      </div>
+                      <div className="arrival-price">
+                        {product.price.toLocaleString("vi-VN")}đ
+                      </div>
+                      <button
+                        className="btn-add-to-cart"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onAddToCart({
+                            id: `arrival-${product.id}`,
+                            name: product.name,
+                            price: product.price,
+                            oldPrice: Math.round(product.price * 1.3),
+                            image:
+                              arrivalImageUrls[product.id] ?? product.image,
+                            quantity: 1,
+                            category: "Hàng mới về",
+                          });
+                        }}
+                      >
+                        🛒 Thêm vào giỏ
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <button
+              className="scroll-btn scroll-right"
+              onClick={() => {
+                const container = document.querySelector(
+                  ".arrivals-scroll-container",
+                );
+                if (container) {
+                  container.scrollBy({ left: 400, behavior: "smooth" });
+                }
+              }}
+            >
+              ›
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Brands Section */}
       <section className="brands-section">
         <div className="section-container">
@@ -657,10 +1001,40 @@ function HomePage({ onAddToCart }: HomePageProps) {
                 image: "👟",
               },
             ].map((product) => (
-              <div key={product.id} className="product-card">
+              <div
+                key={product.id}
+                className="product-card"
+                onClick={() =>
+                  onProductClick({
+                    id: `product-${product.id}`,
+                    name: product.name,
+                    price: product.price,
+                    oldPrice: product.oldPrice,
+                    image: bestsellerImageUrls[product.id] ?? product.image,
+                    quantity: 1,
+                    category: "Sản phẩm bán chạy",
+                  })
+                }
+                style={{ cursor: "pointer" }}
+              >
                 <div className="product-badge">-30%</div>
                 <div className="product-image">
-                  <div className="image-placeholder">{product.image}</div>
+                  <img
+                    src={bestsellerImageUrls[product.id]}
+                    alt={product.name}
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "flex";
+                    }}
+                  />
+                  <div
+                    className="image-placeholder"
+                    style={{ display: "none" }}
+                  >
+                    {product.image}
+                  </div>
                 </div>
                 <div className="product-info">
                   <h4>{product.name}</h4>
@@ -678,17 +1052,18 @@ function HomePage({ onAddToCart }: HomePageProps) {
                   </div>
                   <button
                     className="btn-add-to-cart"
-                    onClick={() =>
+                    onClick={(e) => {
+                      e.stopPropagation();
                       onAddToCart({
                         id: `product-${product.id}`,
                         name: product.name,
                         price: product.price,
                         oldPrice: product.oldPrice,
-                        image: product.image,
+                        image: bestsellerImageUrls[product.id] ?? product.image,
                         quantity: 1,
                         category: "Sản phẩm bán chạy",
-                      })
-                    }
+                      });
+                    }}
                   >
                     🛒 Thêm vào giỏ
                   </button>
