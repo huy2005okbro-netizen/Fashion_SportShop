@@ -802,10 +802,43 @@
   background: #f9f9f9;
 }
 
+.brands-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.brands-scroll-container {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.brands-scroll-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.brands-scroll-container::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 10px;
+}
+
+.brands-scroll-container::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 10px;
+}
+
+.brands-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
+
 .brands-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  display: flex;
   gap: 24px;
+  padding-bottom: 20px;
 }
 
 .brand-card {
@@ -819,7 +852,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 120px;
+  min-height: 200px;
+  min-width: 300px;
+  flex-shrink: 0;
 }
 
 .brand-card:hover {
@@ -977,10 +1012,6 @@
 }
 
 @media (max-width: 1200px) {
-  .brands-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
   .news-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1003,10 +1034,6 @@
 @media (max-width: 768px) {
   .hero-title {
     font-size: 48px;
-  }
-
-  .brands-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 
   .news-grid {

@@ -837,103 +837,165 @@ function HomePage({ onAddToCart, onProductClick }: HomePageProps) {
       <section className="brands-section">
         <div className="section-container">
           <h2 className="section-title">THƯƠNG HIỆU NỔI BẬT</h2>
-          <div className="brands-grid">
-            <div className="brand-card">
-              <img
-                src="/images/brand-nike.png"
-                alt="NIKE"
-                className="brand-image"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                  const placeholder = e.currentTarget
-                    .nextElementSibling as HTMLElement;
-                  if (placeholder) placeholder.style.display = "block";
-                }}
-              />
-              <div className="brand-logo" style={{ display: "none" }}>
-                NIKE
+          <div className="brands-wrapper">
+            <button
+              className="scroll-btn scroll-left"
+              onClick={() => {
+                const container = document.querySelector(
+                  ".brands-scroll-container",
+                );
+                if (container) {
+                  container.scrollBy({ left: -400, behavior: "smooth" });
+                }
+              }}
+            >
+              ‹
+            </button>
+            <div className="brands-scroll-container">
+              <div className="brands-grid">
+                <div className="brand-card">
+                  <img
+                    src="/images/brand-nike.png"
+                    alt="NIKE"
+                    className="brand-image"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "block";
+                    }}
+                  />
+                  <div className="brand-logo" style={{ display: "none" }}>
+                    NIKE
+                  </div>
+                </div>
+                <div className="brand-card">
+                  <img
+                    src="/images/brand-adidas.png"
+                    alt="adidas"
+                    className="brand-image"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "block";
+                    }}
+                  />
+                  <div className="brand-logo" style={{ display: "none" }}>
+                    adidas
+                  </div>
+                </div>
+                <div className="brand-card">
+                  <img
+                    src="/images/brand-puma.png"
+                    alt="PUMA"
+                    className="brand-image"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "block";
+                    }}
+                  />
+                  <div className="brand-logo" style={{ display: "none" }}>
+                    PUMA
+                  </div>
+                </div>
+                <div className="brand-card">
+                  <img
+                    src="/images/brand-ua.png"
+                    alt="Under Armour"
+                    className="brand-image"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "block";
+                    }}
+                  />
+                  <div className="brand-logo" style={{ display: "none" }}>
+                    UA
+                  </div>
+                </div>
+                <div className="brand-card">
+                  <img
+                    src="/images/brand-nb.png"
+                    alt="New Balance"
+                    className="brand-image"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "block";
+                    }}
+                  />
+                  <div className="brand-logo" style={{ display: "none" }}>
+                    NB
+                  </div>
+                </div>
+                <div className="brand-card">
+                  <img
+                    src="/images/brand-asics.png"
+                    alt="ASICS"
+                    className="brand-image"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "block";
+                    }}
+                  />
+                  <div className="brand-logo" style={{ display: "none" }}>
+                    ASICS
+                  </div>
+                </div>
+                <div className="brand-card">
+                  <img
+                    src="/images/brand-asics.png"
+                    alt="ASICS"
+                    className="brand-image"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "block";
+                    }}
+                  />
+                  <div className="brand-logo" style={{ display: "none" }}>
+                    ASICS
+                  </div>
+                </div>
+                <div className="brand-card">
+                  <img
+                    src="/images/brand-asics.png"
+                    alt="ASICS"
+                    className="brand-image"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const placeholder = e.currentTarget
+                        .nextElementSibling as HTMLElement;
+                      if (placeholder) placeholder.style.display = "block";
+                    }}
+                  />
+                  <div className="brand-logo" style={{ display: "none" }}>
+                    ASICS
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="brand-card">
-              <img
-                src="/images/brand-adidas.png"
-                alt="adidas"
-                className="brand-image"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                  const placeholder = e.currentTarget
-                    .nextElementSibling as HTMLElement;
-                  if (placeholder) placeholder.style.display = "block";
-                }}
-              />
-              <div className="brand-logo" style={{ display: "none" }}>
-                adidas
-              </div>
-            </div>
-            <div className="brand-card">
-              <img
-                src="/images/brand-puma.png"
-                alt="PUMA"
-                className="brand-image"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                  const placeholder = e.currentTarget
-                    .nextElementSibling as HTMLElement;
-                  if (placeholder) placeholder.style.display = "block";
-                }}
-              />
-              <div className="brand-logo" style={{ display: "none" }}>
-                PUMA
-              </div>
-            </div>
-            <div className="brand-card">
-              <img
-                src="/images/brand-ua.png"
-                alt="Under Armour"
-                className="brand-image"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                  const placeholder = e.currentTarget
-                    .nextElementSibling as HTMLElement;
-                  if (placeholder) placeholder.style.display = "block";
-                }}
-              />
-              <div className="brand-logo" style={{ display: "none" }}>
-                UA
-              </div>
-            </div>
-            <div className="brand-card">
-              <img
-                src="/images/brand-nb.png"
-                alt="New Balance"
-                className="brand-image"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                  const placeholder = e.currentTarget
-                    .nextElementSibling as HTMLElement;
-                  if (placeholder) placeholder.style.display = "block";
-                }}
-              />
-              <div className="brand-logo" style={{ display: "none" }}>
-                NB
-              </div>
-            </div>
-            <div className="brand-card">
-              <img
-                src="/images/brand-asics.png"
-                alt="ASICS"
-                className="brand-image"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                  const placeholder = e.currentTarget
-                    .nextElementSibling as HTMLElement;
-                  if (placeholder) placeholder.style.display = "block";
-                }}
-              />
-              <div className="brand-logo" style={{ display: "none" }}>
-                ASICS
-              </div>
-            </div>
+            <button
+              className="scroll-btn scroll-right"
+              onClick={() => {
+                const container = document.querySelector(
+                  ".brands-scroll-container",
+                );
+                if (container) {
+                  container.scrollBy({ left: 400, behavior: "smooth" });
+                }
+              }}
+            >
+              ›
+            </button>
           </div>
         </div>
       </section>
