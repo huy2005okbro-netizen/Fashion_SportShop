@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "http://localhost:5004/api";
 
 // Helper function to handle API responses
 const handleResponse = async (response: Response) => {
@@ -259,52 +259,231 @@ export const productsAPI = {
   },
 };
 
-// ==================== ORDERS API (Placeholder) ====================
+// ==================== ORDERS API (Connected to Backend) ====================
 export const ordersAPI = {
-  getAll: async (params?: any) => {
-    // TODO: Implement when backend is ready
-    console.log("Get all orders:", params);
-    return { success: true, data: [], message: "Orders placeholder" };
+  // Get all orders (Admin)
+  getAll: async (params?: {
+    status?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const response = await fetch(`${API_BASE_URL}/orders?${queryParams}`);
+    return handleResponse(response);
   },
 
+  // Get customer orders
+  getMy: async (customerId: number) => {
+    const response = await fetch(
+      `${API_BASE_URL}/orders/my?customerId=${customerId}`,
+    );
+    return handleResponse(response);
+  },
+
+  // Get single order by ID
   getById: async (id: string) => {
-    // TODO: Implement when backend is ready
-    console.log("Get order by ID:", id);
-    return { success: true, data: null, message: "Order placeholder" };
+    const response = await fetch(`${API_BASE_URL}/orders/${id}`);
+    return handleResponse(response);
   },
 
-  create: async (orderData: any) => {
-    // TODO: Implement when backend is ready
-    console.log("Create order:", orderData);
-    return {
-      success: true,
-      data: orderData,
-      message: "Create order placeholder",
-    };
+  // Create new order
+  create: async (orderData: {
+    customerId: number;
+    customerName: string;
+    customerEmail: string;
+    customerPhone: string;
+    shippingAddress: string;
+    items: Array<{
+      productId: number;
+      productName: string;
+      quantity: number;
+      price: number;
+    }>;
+    subtotal: number;
+    shippingFee: number;
+    total: number;
+    paymentMethod: string;
+  }) => {
+    const response = await fetch(`${API_BASE_URL}/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderData),
+    });
+    return handleResponse(response);
   },
 
-  cancel: async (id: string, reason: string) => {
-    // TODO: Implement when backend is ready
-    console.log("Cancel order:", id, reason);
-    return { success: true, message: "Cancel placeholder" };
-  },
-
-  requestReturn: async (id: string, reason: string, images?: string[]) => {
-    // TODO: Implement when backend is ready
-    console.log("Request return:", id, reason, images);
-    return { success: true, message: "Return placeholder" };
-  },
-
-  getAllAdmin: async (params?: any) => {
-    // TODO: Implement when backend is ready
-    console.log("Get all orders (admin):", params);
-    return { success: true, data: [], message: "Admin orders placeholder" };
-  },
-
+  // Update order status
   updateStatus: async (id: string, status: string, note?: string) => {
-    // TODO: Implement when backend is ready
-    console.log("Update order status:", id, status, note);
-    return { success: true, message: "Update status placeholder" };
+    const response = await fetch(`${API_BASE_URL}/orders/${id}/status`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status, note }),
+    });
+    return handleResponse(response);
+  },
+};
+
+// ==================== INVENTORY API (Connected to Backend) ====================
+export const inventoryAPI = {
+  // Get all inventory
+  getAll: async (params?: { warehouse?: string; productId?: number }) => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const response = await fetch(`${API_BASE_URL}/inventory?${queryParams}`);
+    return handleResponse(response);
+  },
+
+  // Get inventory by product ID
+  getByProductId: async (productId: number) => {
+    const response = await fetch(`${API_BASE_URL}/inventory/${productId}`);
+    return handleResponse(response);
+  },
+
+  // Create inventory transaction
+  createTransaction: async (transactionData: {
+    type: "NHAP" | "XUAT" | "KIEM_KE" | "DIEU_CHINH";
+    productId: number;
+    warehouse: string;
+    quantity: number;
+    reason: string;
+    note?: string;
+  }) => {
+    const response = await fetch(`${API_BASE_URL}/inventory/transaction`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(transactionData),
+    });
+    return handleResponse(response);
+  },
+
+  // Get transaction history
+  getTransactions: async (params?: {
+    productId?: number;
+    warehouse?: string;
+  }) => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const response = await fetch(
+      `${API_BASE_URL}/inventory/transactions?${queryParams}`,
+    );
+    return handleResponse(response);
+  },
+};
+
+// ==================== USERS API (Connected to Backend) ====================
+export const usersAPI = {
+  // Register new user
+  register: async (userData: {
+    email: string;
+    password: string;
+    fullName: string;
+    phone?: string;
+    role?: string;
+  }) => {
+    const response = await fetch(`${API_BASE_URL}/users/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+    return handleResponse(response);
+  },
+
+  // Login
+  login: async (email: string, password: string) => {
+    const response = await fetch(`${API_BASE_URL}/users/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    return handleResponse(response);
+  },
+
+  // Get all users (Admin)
+  getAll: async (params?: {
+    role?: string;
+    status?: string;
+    search?: string;
+  }) => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const response = await fetch(`${API_BASE_URL}/users?${queryParams}`);
+    return handleResponse(response);
+  },
+
+  // Get user by ID
+  getById: async (id: number) => {
+    const response = await fetch(`${API_BASE_URL}/users/${id}`);
+    return handleResponse(response);
+  },
+
+  // Update user
+  update: async (
+    id: number,
+    userData: Partial<{
+      email: string;
+      password: string;
+      fullName: string;
+      phone: string;
+      role: string;
+      status: string;
+    }>,
+  ) => {
+    const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+    return handleResponse(response);
+  },
+
+  // Delete user
+  delete: async (id: number) => {
+    const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+      method: "DELETE",
+    });
+    return handleResponse(response);
   },
 };
 
@@ -314,4 +493,6 @@ export default {
   categories: categoriesAPI,
   products: productsAPI,
   orders: ordersAPI,
+  inventory: inventoryAPI,
+  users: usersAPI,
 };

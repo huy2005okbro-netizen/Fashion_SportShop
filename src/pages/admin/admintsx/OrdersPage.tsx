@@ -57,22 +57,27 @@ interface Order {
 const formatCurrency = (value: number) => `${value.toLocaleString("vi-VN")}đ`;
 
 function OrdersPage() {
+  const [orders, setOrders] = useState<Order[]>([]);
+
   // Initialize sample orders if none exist
   useEffect(() => {
-    initializeSampleOrders();
-  }, []);
+    const initialized = initializeSampleOrders();
 
-  const [orders, setOrders] = useState<Order[]>(() => {
+    // Load orders from localStorage
     const saved = localStorage.getItem("btldata_orders");
     if (saved) {
       try {
-        return JSON.parse(saved);
-      } catch {
-        return [];
+        const parsedOrders = JSON.parse(saved);
+        setOrders(parsedOrders);
+        if (initialized) {
+          console.log("Loaded", parsedOrders.length, "sample orders");
+        }
+      } catch (error) {
+        console.error("Error loading orders:", error);
+        setOrders([]);
       }
     }
-    return [];
-  });
+  }, []);
 
   const [selectedStatus, setSelectedStatus] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");

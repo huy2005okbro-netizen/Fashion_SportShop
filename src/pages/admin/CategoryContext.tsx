@@ -1,8 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import api from "../../services/api";
 
 export type CategoryAttribute = {
   id: string;
+  categoryId: number;
   name: string;
 };
 
@@ -16,73 +18,28 @@ export type Category = {
   description: string;
   productCount: number;
   status: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
-
-const LOCAL_STORAGE_CATEGORY_KEY = "btldata_categories";
-const LOCAL_STORAGE_ATTRIBUTES_KEY = "btldata_category_attributes";
-
-const initialCategories: Category[] = [
-  {
-    id: 1,
-    name: "Áo",
-    code: "DM01",
-    icon: "👕",
-    slug: "ao",
-    description: "Danh mục áo thể thao",
-    productCount: 245,
-    status: "Hoạt động",
-  },
-  {
-    id: 2,
-    name: "Quần",
-    code: "DM02",
-    icon: "👖",
-    slug: "quan",
-    description: "Danh mục quần thể thao",
-    productCount: 189,
-    status: "Hoạt động",
-  },
-  {
-    id: 3,
-    name: "Váy",
-    code: "DM03",
-    icon: "👗",
-    slug: "vay",
-    description: "Danh mục váy thể thao",
-    productCount: 156,
-    status: "Hoạt động",
-  },
-  {
-    id: 4,
-    name: "Giày",
-    code: "DM04",
-    icon: "👟",
-    slug: "giay",
-    description: "Danh mục giày thể thao",
-    productCount: 312,
-    status: "Hoạt động",
-  },
-  {
-    id: 5,
-    name: "Phụ kiện",
-    code: "DM05",
-    icon: "🎒",
-    slug: "phu-kien",
-    description: "Danh mục phụ kiện thể thao",
-    productCount: 198,
-    status: "Hoạt động",
-  },
-];
 
 interface CategoryContextType {
   categories: Category[];
-  addCategory: (category: Omit<Category, "id">) => void;
-  updateCategory: (id: number, category: Partial<Category>) => void;
-  deleteCategory: (id: number) => void;
+  loading: boolean;
+  error: string | null;
+  addCategory: (category: Omit<Category, "id">) => Promise<void>;
+  updateCategory: (id: number, category: Partial<Category>) => Promise<void>;
+  deleteCategory: (id: number) => Promise<void>;
   getCategoryById: (id: number) => Category | undefined;
   getCategoryAttributes: (categoryId: number) => CategoryAttribute[];
-  addCategoryAttribute: (categoryId: number, attributeName: string) => void;
-  deleteCategoryAttribute: (categoryId: number, attributeId: string) => void;
+  addCategoryAttribute: (
+    categoryId: number,
+    attributeName: string,
+  ) => Promise<void>;
+  deleteCategoryAttribute: (
+    categoryId: number,
+    attributeId: string,
+  ) => Promise<void>;
+  refreshCategories: () => Promise<void>;
 }
 
 const CategoryContext = createContext<CategoryContextType | undefined>(
@@ -90,73 +47,134 @@ const CategoryContext = createContext<CategoryContextType | undefined>(
 );
 
 export function CategoryProvider({ children }: { children: ReactNode }) {
-  const [categories, setCategories] = useState<Category[]>(() => {
-    if (typeof window === "undefined") return initialCategories;
-
-    try {
-      const saved = localStorage.getItem(LOCAL_STORAGE_CATEGORY_KEY);
-      if (!saved) return initialCategories;
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) {
-        return parsed;
-      }
-    } catch {
-      // ignore parse errors
-    }
-
-    return initialCategories;
-  });
-
+  const [categories, setCategories] = useState<Category[]>([]);
   const [attributes, setAttributes] = useState<
     Record<number, CategoryAttribute[]>
-  >(() => {
-    if (typeof window === "undefined") return {};
+  >({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Fetch categories from API
+  const fetchCategories = async () => {
     try {
-      const saved = localStorage.getItem(LOCAL_STORAGE_ATTRIBUTES_KEY);
-      if (!saved) return {};
-      const parsed = JSON.parse(saved);
-      if (typeof parsed === "object" && parsed !== null) {
-        return parsed;
+      setLoading(true);
+      setError(null);
+      const response = await api.categories.getAll();
+
+      if (response.success && response.data) {
+        // Map API response to Category type
+        const mappedCategories = response.data.map((cat: any) => ({
+          id: cat.id || cat.Id,
+          name: cat.name || cat.Name,
+          code: cat.code || cat.Code,
+          icon: cat.icon || cat.Icon || "📁",
+          parentId: cat.parentId || cat.ParentId,
+          slug: cat.slug || createSlug(cat.name || cat.Name),
+          description: cat.description || cat.Description || "",
+          productCount: cat.productCount || 0,
+          status: cat.status || cat.Status || "Hoạt động",
+          createdAt: cat.createdAt || cat.CreatedAt,
+          updatedAt: cat.updatedAt || cat.UpdatedAt,
+        }));
+        setCategories(mappedCategories);
       }
-    } catch {
-      // ignore parse errors
+    } catch (err: any) {
+      console.error("Error fetching categories:", err);
+      setError(err.message || "Không thể tải danh mục");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    return {};
-  });
+  // Fetch attributes for a category
+  const fetchCategoryAttributes = async (categoryId: number) => {
+    try {
+      const response = await api.categories.getAttributes(categoryId);
+      if (response.success && response.data) {
+        setAttributes((prev) => ({
+          ...prev,
+          [categoryId]: response.data,
+        }));
+      }
+    } catch (err) {
+      console.error(
+        `Error fetching attributes for category ${categoryId}:`,
+        err,
+      );
+    }
+  };
 
+  // Load categories on mount
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(
-      LOCAL_STORAGE_CATEGORY_KEY,
-      JSON.stringify(categories),
-    );
+    fetchCategories();
+  }, []);
+
+  // Load attributes for all categories
+  useEffect(() => {
+    categories.forEach((cat) => {
+      if (!attributes[cat.id]) {
+        fetchCategoryAttributes(cat.id);
+      }
+    });
   }, [categories]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(
-      LOCAL_STORAGE_ATTRIBUTES_KEY,
-      JSON.stringify(attributes),
-    );
-  }, [attributes]);
+  const addCategory = async (newCategory: Omit<Category, "id">) => {
+    try {
+      const response = await api.categories.create({
+        name: newCategory.name,
+        code: newCategory.code,
+        icon: newCategory.icon,
+        parentId: newCategory.parentId || null,
+        description: newCategory.description,
+        status: newCategory.status,
+      });
 
-  const addCategory = (newCategory: Omit<Category, "id">) => {
-    const id = categories.length
-      ? Math.max(...categories.map((c) => c.id)) + 1
-      : 1;
-    setCategories((prev) => [...prev, { ...newCategory, id }]);
+      if (response.success && response.data) {
+        // Refresh categories list
+        await fetchCategories();
+      }
+    } catch (err: any) {
+      console.error("Error adding category:", err);
+      alert(err.message || "Không thể thêm danh mục");
+      throw err;
+    }
   };
 
-  const updateCategory = (id: number, updates: Partial<Category>) => {
-    setCategories((prev) =>
-      prev.map((cat) => (cat.id === id ? { ...cat, ...updates } : cat)),
-    );
+  const updateCategory = async (id: number, updates: Partial<Category>) => {
+    try {
+      const response = await api.categories.update(id, {
+        name: updates.name,
+        code: updates.code,
+        icon: updates.icon,
+        parentId: updates.parentId,
+        description: updates.description,
+        status: updates.status,
+      });
+
+      if (response.success) {
+        // Refresh categories list
+        await fetchCategories();
+      }
+    } catch (err: any) {
+      console.error("Error updating category:", err);
+      alert(err.message || "Không thể cập nhật danh mục");
+      throw err;
+    }
   };
 
-  const deleteCategory = (id: number) => {
-    setCategories((prev) => prev.filter((cat) => cat.id !== id));
+  const deleteCategory = async (id: number) => {
+    try {
+      const response = await api.categories.delete(id);
+
+      if (response.success) {
+        // Refresh categories list
+        await fetchCategories();
+      }
+    } catch (err: any) {
+      console.error("Error deleting category:", err);
+      alert(err.message || "Không thể xóa danh mục");
+      throw err;
+    }
   };
 
   const getCategoryById = (id: number) => {
@@ -167,31 +185,58 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
     return attributes[categoryId] || [];
   };
 
-  const addCategoryAttribute = (categoryId: number, attributeName: string) => {
-    const newAttribute: CategoryAttribute = {
-      id: Date.now().toString(),
-      name: attributeName,
-    };
+  const addCategoryAttribute = async (
+    categoryId: number,
+    attributeName: string,
+  ) => {
+    try {
+      const response = await api.categories.addAttribute(
+        categoryId,
+        attributeName,
+      );
 
-    setAttributes((prev) => ({
-      ...prev,
-      [categoryId]: [...(prev[categoryId] || []), newAttribute],
-    }));
+      if (response.success) {
+        // Refresh attributes for this category
+        await fetchCategoryAttributes(categoryId);
+      }
+    } catch (err: any) {
+      console.error("Error adding attribute:", err);
+      alert(err.message || "Không thể thêm thuộc tính");
+      throw err;
+    }
   };
 
-  const deleteCategoryAttribute = (categoryId: number, attributeId: string) => {
-    setAttributes((prev) => ({
-      ...prev,
-      [categoryId]: (prev[categoryId] || []).filter(
-        (attr) => attr.id !== attributeId,
-      ),
-    }));
+  const deleteCategoryAttribute = async (
+    categoryId: number,
+    attributeId: string,
+  ) => {
+    try {
+      const response = await api.categories.deleteAttribute(
+        categoryId,
+        attributeId,
+      );
+
+      if (response.success) {
+        // Refresh attributes for this category
+        await fetchCategoryAttributes(categoryId);
+      }
+    } catch (err: any) {
+      console.error("Error deleting attribute:", err);
+      alert(err.message || "Không thể xóa thuộc tính");
+      throw err;
+    }
+  };
+
+  const refreshCategories = async () => {
+    await fetchCategories();
   };
 
   return (
     <CategoryContext.Provider
       value={{
         categories,
+        loading,
+        error,
         addCategory,
         updateCategory,
         deleteCategory,
@@ -199,6 +244,7 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
         getCategoryAttributes,
         addCategoryAttribute,
         deleteCategoryAttribute,
+        refreshCategories,
       }}
     >
       {children}
@@ -212,4 +258,15 @@ export function useCategories() {
     throw new Error("useCategories must be used within CategoryProvider");
   }
   return context;
+}
+
+// Helper function
+function createSlug(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }

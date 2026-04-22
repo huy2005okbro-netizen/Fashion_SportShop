@@ -15,6 +15,8 @@ function createSlug(value: string) {
 function CategoriesPage() {
   const {
     categories,
+    loading,
+    error,
     addCategory,
     updateCategory,
     deleteCategory,
@@ -208,96 +210,110 @@ function CategoriesPage() {
         </div>
       </div>
 
-      <div className="table-container">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Tên danh mục</th>
-              <th>Mã</th>
-              <th>Icon</th>
-              <th>Mô tả</th>
-              <th>Số sản phẩm</th>
-              <th>Trạng thái</th>
-              <th>Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCategories.length === 0 ? (
-              <tr>
-                <td colSpan={8}>Không tìm thấy danh mục phù hợp.</td>
-              </tr>
-            ) : (
-              filteredCategories.map((category) => (
-                <tr key={category.id}>
-                  <td>{category.id}</td>
-                  <td>{category.name}</td>
-                  <td>{category.code}</td>
-                  <td>{category.icon}</td>
-                  <td>{category.description}</td>
-                  <td>{category.productCount}</td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        category.status === "Hoạt động"
-                          ? "badge-green"
-                          : "badge-red"
-                      }`}
-                    >
-                      {category.status}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="category-action-menu">
-                      <button
-                        type="button"
-                        className="btn-menu"
-                        onClick={() =>
-                          setOpenMenuId((currentId) =>
-                            currentId === category.id ? null : category.id,
-                          )
-                        }
-                        aria-label={`Tùy chọn cho ${category.name}`}
-                      >
-                        <span>⋯</span>
-                      </button>
+      {loading && (
+        <div style={{ textAlign: "center", padding: "40px" }}>
+          <p>Đang tải danh mục...</p>
+        </div>
+      )}
 
-                      {openMenuId === category.id && (
-                        <div className="dropdown-menu">
-                          <button
-                            type="button"
-                            className="dropdown-item"
-                            onClick={() => handleOpenEditForm(category)}
-                          >
-                            <span>✏️</span>
-                            Chỉnh sửa
-                          </button>
-                          <button
-                            type="button"
-                            className="dropdown-item"
-                            onClick={() => handleManageAttributes(category)}
-                          >
-                            <span>⚙️</span>
-                            Quản lý thuộc tính
-                          </button>
-                          <button
-                            type="button"
-                            className="dropdown-item dropdown-item-danger"
-                            onClick={() => handleDeleteCategory(category.id)}
-                          >
-                            <span>🗑️</span>
-                            Xóa danh mục
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </td>
+      {error && (
+        <div style={{ textAlign: "center", padding: "40px", color: "red" }}>
+          <p>Lỗi: {error}</p>
+        </div>
+      )}
+
+      {!loading && !error && (
+        <div className="table-container">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tên danh mục</th>
+                <th>Mã</th>
+                <th>Icon</th>
+                <th>Mô tả</th>
+                <th>Số sản phẩm</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCategories.length === 0 ? (
+                <tr>
+                  <td colSpan={8}>Không tìm thấy danh mục phù hợp.</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : (
+                filteredCategories.map((category) => (
+                  <tr key={category.id}>
+                    <td>{category.id}</td>
+                    <td>{category.name}</td>
+                    <td>{category.code}</td>
+                    <td>{category.icon}</td>
+                    <td>{category.description}</td>
+                    <td>{category.productCount}</td>
+                    <td>
+                      <span
+                        className={`badge ${
+                          category.status === "Hoạt động"
+                            ? "badge-green"
+                            : "badge-red"
+                        }`}
+                      >
+                        {category.status}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="category-action-menu">
+                        <button
+                          type="button"
+                          className="btn-menu"
+                          onClick={() =>
+                            setOpenMenuId((currentId) =>
+                              currentId === category.id ? null : category.id,
+                            )
+                          }
+                          aria-label={`Tùy chọn cho ${category.name}`}
+                        >
+                          <span>⋯</span>
+                        </button>
+
+                        {openMenuId === category.id && (
+                          <div className="dropdown-menu">
+                            <button
+                              type="button"
+                              className="dropdown-item"
+                              onClick={() => handleOpenEditForm(category)}
+                            >
+                              <span>✏️</span>
+                              Chỉnh sửa
+                            </button>
+                            <button
+                              type="button"
+                              className="dropdown-item"
+                              onClick={() => handleManageAttributes(category)}
+                            >
+                              <span>⚙️</span>
+                              Quản lý thuộc tính
+                            </button>
+                            <button
+                              type="button"
+                              className="dropdown-item dropdown-item-danger"
+                              onClick={() => handleDeleteCategory(category.id)}
+                            >
+                              <span>🗑️</span>
+                              Xóa danh mục
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {showForm && (
         <div className="category-form-overlay" onClick={handleCloseForm}>
