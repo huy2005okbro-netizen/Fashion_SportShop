@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { initializeSampleOrders } from "../sampleOrders";
 import "../admincss/OrdersPage.css";
 
 interface OrderItem {
@@ -56,6 +57,11 @@ interface Order {
 const formatCurrency = (value: number) => `${value.toLocaleString("vi-VN")}đ`;
 
 function OrdersPage() {
+  // Initialize sample orders if none exist
+  useEffect(() => {
+    initializeSampleOrders();
+  }, []);
+
   const [orders, setOrders] = useState<Order[]>(() => {
     const saved = localStorage.getItem("btldata_orders");
     if (saved) {
