@@ -162,36 +162,100 @@ export const categoriesAPI = {
   },
 };
 
-// ==================== PRODUCTS API (Placeholder) ====================
+// ==================== PRODUCTS API (Connected to Backend) ====================
 export const productsAPI = {
-  getAll: async (params?: any) => {
-    // TODO: Implement when backend is ready
-    console.log("Get all products:", params);
-    return { success: true, data: [], message: "Products placeholder" };
+  // Get all products with optional filters
+  getAll: async (params?: {
+    search?: string;
+    category?: string;
+    brand?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    page?: number;
+    limit?: number;
+  }) => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const response = await fetch(`${API_BASE_URL}/products?${queryParams}`);
+    return handleResponse(response);
   },
 
+  // Get single product by ID
   getById: async (id: string | number) => {
-    // TODO: Implement when backend is ready
-    console.log("Get product by ID:", id);
-    return { success: true, data: null, message: "Product placeholder" };
+    const response = await fetch(`${API_BASE_URL}/products/${id}`);
+    return handleResponse(response);
   },
 
-  create: async (productData: any) => {
-    // TODO: Implement when backend is ready
-    console.log("Create product:", productData);
-    return { success: true, data: productData, message: "Create placeholder" };
+  // Create new product
+  create: async (productData: {
+    sku: string;
+    name: string;
+    category: string;
+    brand: string;
+    price: number;
+    stock: number;
+    status: string;
+    image?: string;
+    description?: string;
+    sizes?: string[];
+    colors?: string[];
+  }) => {
+    const response = await fetch(`${API_BASE_URL}/products`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(productData),
+    });
+    return handleResponse(response);
   },
 
-  update: async (id: string | number, productData: any) => {
-    // TODO: Implement when backend is ready
-    console.log("Update product:", id, productData);
-    return { success: true, data: productData, message: "Update placeholder" };
+  // Update product
+  update: async (
+    id: string | number,
+    productData: Partial<{
+      sku: string;
+      name: string;
+      category: string;
+      brand: string;
+      price: number;
+      stock: number;
+      status: string;
+      image: string;
+      description: string;
+      sizes: string[];
+      colors: string[];
+    }>,
+  ) => {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(productData),
+    });
+    return handleResponse(response);
   },
 
+  // Delete product
   delete: async (id: string | number) => {
-    // TODO: Implement when backend is ready
-    console.log("Delete product:", id);
-    return { success: true, message: "Delete placeholder" };
+    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: "DELETE",
+    });
+    return handleResponse(response);
+  },
+
+  // Get brands list
+  getBrands: async () => {
+    const response = await fetch(`${API_BASE_URL}/brands`);
+    return handleResponse(response);
   },
 };
 
