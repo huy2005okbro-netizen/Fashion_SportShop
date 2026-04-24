@@ -1,197 +1,441 @@
+import { useState } from "react";
+import { useReports, type TimeRange } from "../ReportsContext";
 import "../admincss/ReportsPage.css";
 
+type TabType = "overview" | "products" | "orders" | "customers";
+
 function ReportsPage() {
+  const {
+    getSummaryStats,
+    getTopSellingProducts,
+    getLowStockProducts,
+    getProductsByCategory,
+    getOrdersByStatus,
+    getCustomersByType,
+    getRevenueByTimeRange,
+  } = useReports();
+
+  const [timeRange, setTimeRange] = useState<TimeRange>("7days");
+  const [activeTab, setActiveTab] = useState<TabType>("overview");
+
+  const stats = getSummaryStats(timeRange);
+  const topProducts = getTopSellingProducts(10);
+  const lowStockProducts = getLowStockProducts(10);
+  const productsByCategory = getProductsByCategory();
+  const ordersByStatus = getOrdersByStatus();
+  const customersByType = getCustomersByType();
+  const revenueData = getRevenueByTimeRange(timeRange);
+
+  const formatCurrency = (value: number) => {
+    return value.toLocaleString("vi-VN") + "đ";
+  };
+
+  const formatNumber = (value: number) => {
+    return Math.round(value).toLocaleString("vi-VN");
+  };
+
+  const getTimeRangeLabel = (range: TimeRange) => {
+    const labels = {
+      "7days": "7 ngày qua",
+      "30days": "30 ngày qua",
+      thisMonth: "Tháng này",
+      lastMonth: "Tháng trước",
+      thisYear: "Năm nay",
+      custom: "Tùy chỉnh",
+    };
+    return labels[range];
+  };
+
+  const handleExport = () => {
+    alert("Chức năng xuất báo cáo đang được phát triển!");
+  };
+
   return (
-    <div className="page-content">
+    <div className="reports-page">
       <div className="page-header">
-        <h2>Báo cáo & thống kê</h2>
-        <div className="filter-group">
-          <select className="filter-select">
-            <option>7 ngày qua</option>
-            <option>30 ngày qua</option>
-            <option>Tháng này</option>
-            <option>Tùy chỉnh</option>
+        <div>
+          <h1>Báo cáo & Thống kê</h1>
+          <p className="page-subtitle">Phân tích dữ liệu kinh doanh chi tiết</p>
+        </div>
+        <div className="header-actions">
+          <select
+            className="filter-select"
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value as TimeRange)}
+          >
+            <option value="7days">7 ngày qua</option>
+            <option value="30days">30 ngày qua</option>
+            <option value="thisMonth">Tháng này</option>
+            <option value="lastMonth">Tháng trước</option>
+            <option value="thisYear">Năm nay</option>
           </select>
-          <button className="btn-primary">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Xuất báo cáo
+          <button className="btn-primary" onClick={handleExport}>
+            📥 Xuất báo cáo
           </button>
         </div>
       </div>
 
-      <div className="dashboard-grid" style={{ marginBottom: "32px" }}>
+      {/* Summary Stats */}
+      <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-icon blue">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+          <div className="stat-icon revenue">💰</div>
+          <div className="stat-content">
+            <div className="stat-label">Tổng doanh thu</div>
+            <div className="stat-value">
+              {formatCurrency(stats.totalRevenue)}
+            </div>
+            <div
+              className={`stat-change ${stats.revenueGrowth >= 0 ? "positive" : "negative"}`}
             >
-              <line x1="18" y1="20" x2="18" y2="10" />
-              <line x1="12" y1="20" x2="12" y2="4" />
-              <line x1="6" y1="20" x2="6" y2="14" />
-            </svg>
-          </div>
-          <div className="stat-info">
-            <h3>Doanh thu trung bình</h3>
-            <p className="stat-value">17,857,143đ</p>
-            <span className="stat-change positive">+12.5%</span>
+              {stats.revenueGrowth >= 0 ? "↑" : "↓"}{" "}
+              {Math.abs(stats.revenueGrowth).toFixed(1)}%
+            </div>
           </div>
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon green">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+          <div className="stat-icon orders">📦</div>
+          <div className="stat-content">
+            <div className="stat-label">Tổng đơn hàng</div>
+            <div className="stat-value">{formatNumber(stats.totalOrders)}</div>
+            <div
+              className={`stat-change ${stats.ordersGrowth >= 0 ? "positive" : "negative"}`}
             >
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-            </svg>
-          </div>
-          <div className="stat-info">
-            <h3>Đơn hàng/ngày</h3>
-            <p className="stat-value">176</p>
-            <span className="stat-change positive">+8.2%</span>
+              {stats.ordersGrowth >= 0 ? "↑" : "↓"}{" "}
+              {Math.abs(stats.ordersGrowth).toFixed(1)}%
+            </div>
           </div>
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon purple">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+          <div className="stat-icon customers">👥</div>
+          <div className="stat-content">
+            <div className="stat-label">Khách hàng</div>
+            <div className="stat-value">
+              {formatNumber(stats.totalCustomers)}
+            </div>
+            <div
+              className={`stat-change ${stats.customersGrowth >= 0 ? "positive" : "negative"}`}
             >
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-            </svg>
-          </div>
-          <div className="stat-info">
-            <h3>Khách hàng mới</h3>
-            <p className="stat-value">1,208</p>
-            <span className="stat-change positive">+15.3%</span>
+              {stats.customersGrowth >= 0 ? "↑" : "↓"}{" "}
+              {Math.abs(stats.customersGrowth).toFixed(1)}%
+            </div>
           </div>
         </div>
 
         <div className="stat-card">
-          <div className="stat-icon orange">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 6v6l4 2" />
-            </svg>
-          </div>
-          <div className="stat-info">
-            <h3>Tỷ lệ hoàn thành</h3>
-            <p className="stat-value">94.5%</p>
-            <span className="stat-change positive">+2.1%</span>
+          <div className="stat-icon avg">📊</div>
+          <div className="stat-content">
+            <div className="stat-label">Giá trị đơn TB</div>
+            <div className="stat-value">
+              {formatCurrency(stats.averageOrderValue)}
+            </div>
+            <div className="stat-change positive">
+              Tỷ lệ hoàn thành: {stats.completionRate}%
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="table-container">
-        <h3 style={{ padding: "20px", margin: 0, fontSize: "16px" }}>
-          Top sản phẩm bán chạy
-        </h3>
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Xếp hạng</th>
-              <th>Sản phẩm</th>
-              <th>Danh mục</th>
-              <th>Đã bán</th>
-              <th>Doanh thu</th>
-              <th>Tăng trưởng</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <strong>1</strong>
-              </td>
-              <td>Áo thun nam basic</td>
-              <td>Áo</td>
-              <td>1,245</td>
-              <td>
-                <strong>37,245,000đ</strong>
-              </td>
-              <td>
-                <span className="stat-change positive">+25.3%</span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <strong>2</strong>
-              </td>
-              <td>Quần jean nữ</td>
-              <td>Quần</td>
-              <td>987</td>
-              <td>
-                <strong>59,113,000đ</strong>
-              </td>
-              <td>
-                <span className="stat-change positive">+18.7%</span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <strong>3</strong>
-              </td>
-              <td>Váy maxi hoa</td>
-              <td>Váy</td>
-              <td>756</td>
-              <td>
-                <strong>34,020,000đ</strong>
-              </td>
-              <td>
-                <span className="stat-change positive">+12.4%</span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <strong>4</strong>
-              </td>
-              <td>Áo khoác dạ</td>
-              <td>Áo khoác</td>
-              <td>543</td>
-              <td>
-                <strong>65,160,000đ</strong>
-              </td>
-              <td>
-                <span className="stat-change negative">-5.2%</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      {/* Tabs */}
+      <div className="tabs">
+        <button
+          className={activeTab === "overview" ? "active" : ""}
+          onClick={() => setActiveTab("overview")}
+        >
+          📈 Tổng quan
+        </button>
+        <button
+          className={activeTab === "products" ? "active" : ""}
+          onClick={() => setActiveTab("products")}
+        >
+          📦 Sản phẩm
+        </button>
+        <button
+          className={activeTab === "orders" ? "active" : ""}
+          onClick={() => setActiveTab("orders")}
+        >
+          🛒 Đơn hàng
+        </button>
+        <button
+          className={activeTab === "customers" ? "active" : ""}
+          onClick={() => setActiveTab("customers")}
+        >
+          👥 Khách hàng
+        </button>
       </div>
+
+      {/* Overview Tab */}
+      {activeTab === "overview" && (
+        <div className="tab-content">
+          <div className="reports-grid">
+            {/* Revenue Chart */}
+            <div className="report-card full-width">
+              <h3>Doanh thu theo ngày</h3>
+              <div className="chart-container">
+                <div className="simple-chart">
+                  {revenueData.map((item, index) => {
+                    const maxRevenue = Math.max(
+                      ...revenueData.map((d) => d.revenue),
+                    );
+                    const height = (item.revenue / maxRevenue) * 100;
+                    return (
+                      <div key={index} className="chart-bar-wrapper">
+                        <div
+                          className="chart-bar"
+                          style={{ height: `${height}%` }}
+                        >
+                          <div className="bar-value">
+                            {(item.revenue / 1000000).toFixed(1)}M
+                          </div>
+                        </div>
+                        <div className="chart-label">
+                          {new Date(item.date).getDate()}/
+                          {new Date(item.date).getMonth() + 1}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Top Products */}
+            <div className="report-card">
+              <h3>Top 5 sản phẩm bán chạy</h3>
+              <div className="list-items">
+                {topProducts.slice(0, 5).map((product, index) => (
+                  <div key={product.id} className="list-item">
+                    <div className="item-rank">#{index + 1}</div>
+                    <div className="item-info">
+                      <div className="item-name">{product.name}</div>
+                      <div className="item-meta">
+                        {product.category} • Đã bán: {product.sold}
+                      </div>
+                    </div>
+                    <div className="item-value">
+                      {formatCurrency(product.revenue)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Orders by Status */}
+            <div className="report-card">
+              <h3>Đơn hàng theo trạng thái</h3>
+              <div className="list-items">
+                {ordersByStatus.map((order) => (
+                  <div key={order.status} className="list-item">
+                    <div className="item-info">
+                      <div className="item-name">{order.status}</div>
+                      <div className="progress-bar">
+                        <div
+                          className="progress-fill"
+                          style={{ width: `${order.percentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div className="item-stats">
+                      <div>{order.count} đơn</div>
+                      <div className="item-percentage">{order.percentage}%</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Products Tab */}
+      {activeTab === "products" && (
+        <div className="tab-content">
+          <div className="reports-grid">
+            {/* Top Selling Products */}
+            <div className="report-card full-width">
+              <h3>Sản phẩm bán chạy nhất</h3>
+              <div className="table-container">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Xếp hạng</th>
+                      <th>Sản phẩm</th>
+                      <th>Danh mục</th>
+                      <th>Đã bán</th>
+                      <th>Doanh thu</th>
+                      <th>Tăng trưởng</th>
+                      <th>Tồn kho</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {topProducts.map((product, index) => (
+                      <tr key={product.id}>
+                        <td>
+                          <strong>#{index + 1}</strong>
+                        </td>
+                        <td>{product.name}</td>
+                        <td>{product.category}</td>
+                        <td>{formatNumber(product.sold)}</td>
+                        <td>
+                          <strong>{formatCurrency(product.revenue)}</strong>
+                        </td>
+                        <td>
+                          <span
+                            className={`stat-change ${product.growth >= 0 ? "positive" : "negative"}`}
+                          >
+                            {product.growth >= 0 ? "↑" : "↓"}{" "}
+                            {Math.abs(product.growth)}%
+                          </span>
+                        </td>
+                        <td>
+                          <span
+                            className={
+                              product.stock <= 10 ? "stock-low" : "stock-ok"
+                            }
+                          >
+                            {product.stock}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Low Stock Products */}
+            <div className="report-card">
+              <h3>⚠️ Sản phẩm sắp hết hàng</h3>
+              <div className="list-items">
+                {lowStockProducts.map((product) => (
+                  <div key={product.id} className="list-item alert">
+                    <div className="item-info">
+                      <div className="item-name">{product.name}</div>
+                      <div className="item-meta">{product.category}</div>
+                    </div>
+                    <div className="item-value">
+                      <span className="stock-badge low">
+                        Còn {product.stock}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Products by Category */}
+            <div className="report-card">
+              <h3>Sản phẩm theo danh mục</h3>
+              <div className="list-items">
+                {productsByCategory.map((cat) => (
+                  <div key={cat.category} className="list-item">
+                    <div className="item-info">
+                      <div className="item-name">{cat.category}</div>
+                      <div className="item-meta">{cat.count} sản phẩm</div>
+                    </div>
+                    <div className="item-value">
+                      {formatCurrency(cat.revenue)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Orders Tab */}
+      {activeTab === "orders" && (
+        <div className="tab-content">
+          <div className="reports-grid">
+            <div className="report-card full-width">
+              <h3>Phân tích đơn hàng</h3>
+              <div className="table-container">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Trạng thái</th>
+                      <th>Số lượng</th>
+                      <th>Tỷ lệ</th>
+                      <th>Doanh thu</th>
+                      <th>Biểu đồ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ordersByStatus.map((order) => (
+                      <tr key={order.status}>
+                        <td>
+                          <strong>{order.status}</strong>
+                        </td>
+                        <td>{formatNumber(order.count)}</td>
+                        <td>{order.percentage}%</td>
+                        <td>
+                          <strong>{formatCurrency(order.revenue)}</strong>
+                        </td>
+                        <td>
+                          <div className="progress-bar">
+                            <div
+                              className="progress-fill"
+                              style={{ width: `${order.percentage}%` }}
+                            ></div>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Customers Tab */}
+      {activeTab === "customers" && (
+        <div className="tab-content">
+          <div className="reports-grid">
+            <div className="report-card full-width">
+              <h3>Phân tích khách hàng</h3>
+              <div className="table-container">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Loại khách hàng</th>
+                      <th>Số lượng</th>
+                      <th>Tỷ lệ</th>
+                      <th>Doanh thu</th>
+                      <th>Biểu đồ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {customersByType.map((customer) => (
+                      <tr key={customer.type}>
+                        <td>
+                          <strong>{customer.type}</strong>
+                        </td>
+                        <td>{formatNumber(customer.count)}</td>
+                        <td>{customer.percentage}%</td>
+                        <td>
+                          <strong>{formatCurrency(customer.revenue)}</strong>
+                        </td>
+                        <td>
+                          <div className="progress-bar">
+                            <div
+                              className="progress-fill"
+                              style={{ width: `${customer.percentage}%` }}
+                            ></div>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -7,6 +7,9 @@ import InventoryPage from "./InventoryPage";
 import OrdersPage from "./OrdersPage";
 import FinancePage from "./FinancePage";
 import ReportsPage from "./ReportsPage";
+import VouchersPage from "./VouchersPage";
+import MarketingPage from "./MarketingPage";
+import SettingsPage from "./SettingsPage";
 import { CategoryProvider } from "../CategoryContext";
 import "../admincss/AdminDashboard.css";
 
@@ -19,8 +22,8 @@ type MenuType =
   | "orders"
   | "finance"
   | "reports"
+  | "vouchers"
   | "marketing"
-  | "coupons"
   | "settings";
 
 function AdminDashboard() {
@@ -171,6 +174,25 @@ function AdminDashboard() {
             </button>
 
             <button
+              className={activeMenu === "vouchers" ? "active" : ""}
+              onClick={() => setActiveMenu("vouchers")}
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+                <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+                <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+              </svg>
+              <span>Mã giảm giá</span>
+            </button>
+
+            <button
               className={activeMenu === "reports" ? "active" : ""}
               onClick={() => setActiveMenu("reports")}
             >
@@ -205,24 +227,6 @@ function AdminDashboard() {
                 <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
               </svg>
               <span>Marketing</span>
-            </button>
-
-            <button
-              className={activeMenu === "coupons" ? "active" : ""}
-              onClick={() => setActiveMenu("coupons")}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-                <line x1="7" y1="7" x2="7.01" y2="7" />
-              </svg>
-              <span>Mã giảm giá</span>
             </button>
 
             <button
@@ -277,12 +281,12 @@ function AdminDashboard() {
                           ? "Quản lý đơn hàng"
                           : activeMenu === "finance"
                             ? "Quản lý tài chính"
-                            : activeMenu === "reports"
-                              ? "Báo cáo & thống kê"
-                              : activeMenu === "marketing"
-                                ? "Marketing"
-                                : activeMenu === "coupons"
-                                  ? "Mã giảm giá"
+                            : activeMenu === "vouchers"
+                              ? "Quản lý mã giảm giá"
+                              : activeMenu === "reports"
+                                ? "Báo cáo & thống kê"
+                                : activeMenu === "marketing"
+                                  ? "Marketing"
                                   : "Cài đặt"}
             </h1>
             <div className="user-info">
@@ -299,7 +303,10 @@ function AdminDashboard() {
             {activeMenu === "inventory" && <InventoryPage />}
             {activeMenu === "orders" && <OrdersPage />}
             {activeMenu === "finance" && <FinancePage />}
+            {activeMenu === "vouchers" && <VouchersPage />}
+            {activeMenu === "marketing" && <MarketingPage />}
             {activeMenu === "reports" && <ReportsPage />}
+            {activeMenu === "settings" && <SettingsPage />}
 
             {![
               "dashboard",
@@ -309,7 +316,10 @@ function AdminDashboard() {
               "inventory",
               "orders",
               "finance",
+              "vouchers",
+              "marketing",
               "reports",
+              "settings",
             ].includes(activeMenu) && (
               <div className="placeholder">
                 <svg

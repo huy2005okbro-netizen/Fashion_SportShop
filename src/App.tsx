@@ -3,6 +3,10 @@ import AdminLogin from "./components/AdminLogin";
 import CustomerLogin from "./components/CustomerLogin";
 import AdminDashboard from "./pages/admin/admintsx/AdminDashboard";
 import CustomerDashboard from "./pages/customer/customertsx/CustomerDashboard";
+import { VoucherProvider } from "./pages/admin/VoucherContext";
+import { MarketingProvider } from "./pages/admin/MarketingContext";
+import { ReportsProvider } from "./pages/admin/ReportsContext";
+import { SettingsProvider } from "./pages/admin/SettingsContext";
 import "./App.css";
 
 type UserType = "customer" | "admin";
@@ -14,12 +18,32 @@ function App() {
 
   // Nếu admin đã đăng nhập, hiển thị admin dashboard
   if (isAdminLoggedIn) {
-    return <AdminDashboard />;
+    return (
+      <SettingsProvider>
+        <ReportsProvider>
+          <MarketingProvider>
+            <VoucherProvider>
+              <AdminDashboard />
+            </VoucherProvider>
+          </MarketingProvider>
+        </ReportsProvider>
+      </SettingsProvider>
+    );
   }
 
   // Nếu customer đã đăng nhập, hiển thị customer dashboard
   if (isCustomerLoggedIn) {
-    return <CustomerDashboard />;
+    return (
+      <SettingsProvider>
+        <ReportsProvider>
+          <MarketingProvider>
+            <VoucherProvider>
+              <CustomerDashboard />
+            </VoucherProvider>
+          </MarketingProvider>
+        </ReportsProvider>
+      </SettingsProvider>
+    );
   }
 
   return (

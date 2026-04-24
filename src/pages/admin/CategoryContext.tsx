@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import api from "../../services/api";
 
 export type CategoryAttribute = {
   id: string;
@@ -46,133 +45,159 @@ const CategoryContext = createContext<CategoryContextType | undefined>(
   undefined,
 );
 
+const STORAGE_KEY = "fashion-store-categories";
+const ATTRIBUTES_STORAGE_KEY = "fashion-store-category-attributes";
+
 export function CategoryProvider({ children }: { children: ReactNode }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [attributes, setAttributes] = useState<
     Record<number, CategoryAttribute[]>
   >({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch categories from API
-  const fetchCategories = async () => {
+  // Load from localStorage
+  useEffect(() => {
     try {
-      setLoading(true);
-      setError(null);
-      const response = await api.categories.getAll();
-
-      if (response.success && response.data) {
-        // Map API response to Category type
-        const mappedCategories = response.data.map((cat: any) => ({
-          id: cat.id || cat.Id,
-          name: cat.name || cat.Name,
-          code: cat.code || cat.Code,
-          icon: cat.icon || cat.Icon || "📁",
-          parentId: cat.parentId || cat.ParentId,
-          slug: cat.slug || createSlug(cat.name || cat.Name),
-          description: cat.description || cat.Description || "",
-          productCount: cat.productCount || 0,
-          status: cat.status || cat.Status || "Hoạt động",
-          createdAt: cat.createdAt || cat.CreatedAt,
-          updatedAt: cat.updatedAt || cat.UpdatedAt,
-        }));
-        setCategories(mappedCategories);
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        setCategories(JSON.parse(stored));
+      } else {
+        // Initialize with sample data
+        const initialCategories: Category[] = [
+          {
+            id: 1,
+            name: "Giày thể thao",
+            code: "GIAY",
+            icon: "👟",
+            slug: "giay-the-thao",
+            description: "Các loại giày thể thao chuyên dụng",
+            productCount: 0,
+            status: "Hoạt động",
+          },
+          {
+            id: 2,
+            name: "Áo thể thao",
+            code: "AO",
+            icon: "👕",
+            slug: "ao-the-thao",
+            description: "Áo tập luyện và thi đấu",
+            productCount: 0,
+            status: "Hoạt động",
+          },
+          {
+            id: 3,
+            name: "Quần thể thao",
+            code: "QUAN",
+            icon: "👖",
+            slug: "quan-the-thao",
+            description: "Quần tập luyện và thi đấu",
+            productCount: 0,
+            status: "Hoạt động",
+          },
+          {
+            id: 4,
+            name: "Phụ kiện",
+            code: "PHU-KIEN",
+            icon: "🎒",
+            slug: "phu-kien",
+            description: "Các phụ kiện thể thao",
+            productCount: 0,
+            status: "Hoạt động",
+          },
+        ];
+        setCategories(initialCategories);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialCategories));
       }
-    } catch (err: any) {
-      console.error("Error fetching categories:", err);
-      setError(err.message || "Không thể tải danh mục");
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  // Fetch attributes for a category
-  const fetchCategoryAttributes = async (categoryId: number) => {
-    try {
-      const response = await api.categories.getAttributes(categoryId);
-      if (response.success && response.data) {
-        setAttributes((prev) => ({
-          ...prev,
-          [categoryId]: response.data,
-        }));
+      const storedAttrs = localStorage.getItem(ATTRIBUTES_STORAGE_KEY);
+      if (storedAttrs) {
+        setAttributes(JSON.parse(storedAttrs));
+      } else {
+        // Initialize with sample attributes
+        const initialAttributes: Record<number, CategoryAttribute[]> = {
+          1: [
+            { id: "attr_1", categoryId: 1, name: "Kích cỡ" },
+            { id: "attr_2", categoryId: 1, name: "Màu sắc" },
+            { id: "attr_3", categoryId: 1, name: "Chất liệu" },
+          ],
+          2: [
+            { id: "attr_4", categoryId: 2, name: "Size áo" },
+            { id: "attr_5", categoryId: 2, name: "Màu sắc" },
+          ],
+        };
+        setAttributes(initialAttributes);
+        localStorage.setItem(
+          ATTRIBUTES_STORAGE_KEY,
+          JSON.stringify(initialAttributes),
+        );
       }
     } catch (err) {
-      console.error(
-        `Error fetching attributes for category ${categoryId}:`,
-        err,
-      );
+      console.error("Error loading categories:", err);
     }
-  };
-
-  // Load categories on mount
-  useEffect(() => {
-    fetchCategories();
   }, []);
 
-  // Load attributes for all categories
+  // Save to localStorage whenever categories change
   useEffect(() => {
-    categories.forEach((cat) => {
-      if (!attributes[cat.id]) {
-        fetchCategoryAttributes(cat.id);
-      }
-    });
+    if (categories.length > 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
+    }
   }, [categories]);
+
+  // Save to localStorage whenever attributes change
+  useEffect(() => {
+    localStorage.setItem(ATTRIBUTES_STORAGE_KEY, JSON.stringify(attributes));
+  }, [attributes]);
 
   const addCategory = async (newCategory: Omit<Category, "id">) => {
     try {
-      const response = await api.categories.create({
-        name: newCategory.name,
-        code: newCategory.code,
-        icon: newCategory.icon,
-        parentId: newCategory.parentId || null,
-        description: newCategory.description,
-        status: newCategory.status,
-      });
-
-      if (response.success && response.data) {
-        // Refresh categories list
-        await fetchCategories();
-      }
+      const maxId = categories.reduce((max, cat) => Math.max(max, cat.id), 0);
+      const category: Category = {
+        ...newCategory,
+        id: maxId + 1,
+        slug: createSlug(newCategory.name),
+        productCount: 0,
+      };
+      setCategories([...categories, category]);
     } catch (err: any) {
       console.error("Error adding category:", err);
-      alert(err.message || "Không thể thêm danh mục");
       throw err;
     }
   };
 
   const updateCategory = async (id: number, updates: Partial<Category>) => {
     try {
-      const response = await api.categories.update(id, {
-        name: updates.name,
-        code: updates.code,
-        icon: updates.icon,
-        parentId: updates.parentId,
-        description: updates.description,
-        status: updates.status,
-      });
-
-      if (response.success) {
-        // Refresh categories list
-        await fetchCategories();
-      }
+      setCategories(
+        categories.map((cat) =>
+          cat.id === id
+            ? {
+                ...cat,
+                ...updates,
+                slug: updates.name ? createSlug(updates.name) : cat.slug,
+              }
+            : cat,
+        ),
+      );
     } catch (err: any) {
       console.error("Error updating category:", err);
-      alert(err.message || "Không thể cập nhật danh mục");
       throw err;
     }
   };
 
   const deleteCategory = async (id: number) => {
     try {
-      const response = await api.categories.delete(id);
-
-      if (response.success) {
-        // Refresh categories list
-        await fetchCategories();
+      // Check if has children
+      const hasChildren = categories.some((cat) => cat.parentId === id);
+      if (hasChildren) {
+        throw new Error("Không thể xóa danh mục có danh mục con");
       }
+      setCategories(categories.filter((cat) => cat.id !== id));
+      // Also delete attributes
+      const newAttributes = { ...attributes };
+      delete newAttributes[id];
+      setAttributes(newAttributes);
     } catch (err: any) {
       console.error("Error deleting category:", err);
-      alert(err.message || "Không thể xóa danh mục");
       throw err;
     }
   };
@@ -190,18 +215,26 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
     attributeName: string,
   ) => {
     try {
-      const response = await api.categories.addAttribute(
-        categoryId,
-        attributeName,
-      );
+      const categoryAttrs = attributes[categoryId] || [];
+      const maxId = Object.values(attributes)
+        .flat()
+        .reduce((max, attr) => {
+          const num = parseInt(attr.id.replace("attr_", ""));
+          return Math.max(max, num);
+        }, 0);
 
-      if (response.success) {
-        // Refresh attributes for this category
-        await fetchCategoryAttributes(categoryId);
-      }
+      const newAttribute: CategoryAttribute = {
+        id: `attr_${maxId + 1}`,
+        categoryId,
+        name: attributeName,
+      };
+
+      setAttributes({
+        ...attributes,
+        [categoryId]: [...categoryAttrs, newAttribute],
+      });
     } catch (err: any) {
       console.error("Error adding attribute:", err);
-      alert(err.message || "Không thể thêm thuộc tính");
       throw err;
     }
   };
@@ -211,24 +244,19 @@ export function CategoryProvider({ children }: { children: ReactNode }) {
     attributeId: string,
   ) => {
     try {
-      const response = await api.categories.deleteAttribute(
-        categoryId,
-        attributeId,
-      );
-
-      if (response.success) {
-        // Refresh attributes for this category
-        await fetchCategoryAttributes(categoryId);
-      }
+      const categoryAttrs = attributes[categoryId] || [];
+      setAttributes({
+        ...attributes,
+        [categoryId]: categoryAttrs.filter((attr) => attr.id !== attributeId),
+      });
     } catch (err: any) {
       console.error("Error deleting attribute:", err);
-      alert(err.message || "Không thể xóa thuộc tính");
       throw err;
     }
   };
 
   const refreshCategories = async () => {
-    await fetchCategories();
+    // No-op for localStorage version
   };
 
   return (
