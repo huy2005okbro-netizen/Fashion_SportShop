@@ -7,6 +7,7 @@ import { VoucherProvider } from "./pages/admin/VoucherContext";
 import { MarketingProvider } from "./pages/admin/MarketingContext";
 import { ReportsProvider } from "./pages/admin/ReportsContext";
 import { SettingsProvider } from "./pages/admin/SettingsContext";
+import { CustomerProvider } from "./pages/customer/CustomerContext";
 import "./App.css";
 
 type UserType = "customer" | "admin";
@@ -34,15 +35,17 @@ function App() {
   // Nếu customer đã đăng nhập, hiển thị customer dashboard
   if (isCustomerLoggedIn) {
     return (
-      <SettingsProvider>
-        <ReportsProvider>
-          <MarketingProvider>
-            <VoucherProvider>
-              <CustomerDashboard />
-            </VoucherProvider>
-          </MarketingProvider>
-        </ReportsProvider>
-      </SettingsProvider>
+      <CustomerProvider>
+        <SettingsProvider>
+          <ReportsProvider>
+            <MarketingProvider>
+              <VoucherProvider>
+                <CustomerDashboard />
+              </VoucherProvider>
+            </MarketingProvider>
+          </ReportsProvider>
+        </SettingsProvider>
+      </CustomerProvider>
     );
   }
 
